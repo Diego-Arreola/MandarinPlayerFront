@@ -19,6 +19,9 @@ const WelcomePage = () => {
         <Button onClick={() => navigate('/topics')} style={{ flex: 1 }}>
           Ver temas
         </Button>
+        <Button onClick={() => navigate('/create-game')} style={{ flex: 1 }}>
+          Crear partida
+        </Button>
         <Button onClick={() => navigate('/joingame')} variant="secondary" style={{ flex: 1 }}>
           Join game
         </Button>

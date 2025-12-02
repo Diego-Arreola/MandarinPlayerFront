@@ -16,6 +16,8 @@ import GameLayout from './components/GameLayout';
 // You will also create GameLobbyPage, QuestionPage, etc.
 import TopicsPage from './pages/TopicsPage';
 import TopicDetailPage from './pages/TopicDetailPage';
+import CreateGamePage from './pages/CreateGamePage';
+import GameLobbyPage from './pages/GameLobbyPage';
 
 function App() {
   return (
@@ -31,6 +33,8 @@ function App() {
         <Route path="/joingame" element={<JoinGamePage />} />
         <Route path="/topics" element={<TopicsPage />} />
         <Route path="/topics/:topicId" element={<TopicDetailPage />} />
+        <Route path="/create-game" element={<CreateGamePage />} />
+        <Route path="/lobby/:gameCode" element={<GameLobbyPage />} />
       </Route>
 
       {/* In-game routes, all nested under a GameLayout to manage the session */}
