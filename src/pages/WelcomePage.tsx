@@ -16,7 +16,7 @@ const WelcomePage = () => {
       <h2 style={{ color: 'var(--secondary-color)' }}>¡Hola, {user?.name}!</h2>
 
       <div style={{ display: 'flex', gap: '20px', margin: '30px 0' }}>
-        <Button onClick={() => alert('Navigate to Topics!')} style={{ flex: 1 }}>
+        <Button onClick={() => navigate('/topics')} style={{ flex: 1 }}>
           Ver temas
         </Button>
         <Button onClick={() => navigate('/joingame')} variant="secondary" style={{ flex: 1 }}>

@@ -14,6 +14,8 @@ import NotFoundPage from './pages/NotFoundPage';
 // Import your layout components
 import GameLayout from './components/GameLayout';
 // You will also create GameLobbyPage, QuestionPage, etc.
+import TopicsPage from './pages/TopicsPage';
+import TopicDetailPage from './pages/TopicDetailPage';
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route path="/welcome" element={<WelcomePage />} />
         <Route path="/joingame" element={<JoinGamePage />} />
+        <Route path="/topics" element={<TopicsPage />} />
+        <Route path="/topics/:topicId" element={<TopicDetailPage />} />
       </Route>
 
       {/* In-game routes, all nested under a GameLayout to manage the session */}
