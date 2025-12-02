@@ -1,0 +1,139 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Button from '../components/Button';
+import { topicService } from '../services/topicService';
+import type { Topic } from '../services/topicService';
+import { gameService } from '../services/gameService';
+import type { GameType } from '../services/gameService';
+import { useAuth } from '../context/AuthContext';
+
+const CreateGamePage = () => {
+    const navigate = useNavigate();
+    const { user } = useAuth();
+    const [step, setStep] = useState<1 | 2>(1);
+    const [selectedGame, setSelectedGame] = useState<GameType | null>(null);
+    const [topics, setTopics] = useState<Topic[]>([]);
+    const [selectedTopicId, setSelectedTopicId] = useState('');
+    const [rounds, setRounds] = useState(5);
+    const [isCreating, setIsCreating] = useState(false);
+
+    useEffect(() => {
+        loadTopics();
+    }, []);
+
+    const loadTopics = async () => {
+        const data = await topicService.getTopics();
+        setTopics(data);
+        if (data.length > 0) {
+            setSelectedTopicId(data[0].id);
+        }
+    };
+
+    const handleGameSelect = (game: GameType) => {
+        setSelectedGame(game);
+        setStep(2);
+    };
+
+    const handleCreateGame = async () => {
+        if (!selectedGame || !selectedTopicId || !user) return;
+
+        setIsCreating(true);
+        try {
+            const session = await gameService.createGame({
+                type: selectedGame,
+                topicId: selectedTopicId,
+                rounds
+            }, user.name);
+            navigate(`/lobby/${session.code}`);
+        } catch (error) {
+            console.error('Failed to create game:', error);
+            alert('Failed to create game');
+        } finally {
+            setIsCreating(false);
+        }
+    };
+
+    return (
+        <div style={{ maxWidth: '800px', margin: 'auto', padding: '20px' }}>
+            <Button variant="secondary" onClick={() => navigate('/welcome')} style={{ marginBottom: '20px' }}>
+                &larr; Back to Home
+            </Button>
+
+            <h2 style={{ color: 'var(--secondary-color)', textAlign: 'center', marginBottom: '30px' }}>
+                {step === 1 ? 'Select Game Mode' : 'Configure Game'}
+            </h2>
+
+            {step === 1 && (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
+                    {['kahoot', 'jeopardy', 'memorama'].map((game) => (
+                        <div
+                            key={game}
+                            onClick={() => handleGameSelect(game as GameType)}
+                            style={{
+                                border: '2px solid #ddd',
+                                borderRadius: '10px',
+                                padding: '30px',
+                                textAlign: 'center',
+                                cursor: 'pointer',
+                                backgroundColor: 'white',
+                                color: 'black',
+                                transition: 'transform 0.2s',
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                        >
+                            <h3 style={{ textTransform: 'capitalize', margin: 0 }}>{game}</h3>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {step === 2 && (
+                <div style={{ backgroundColor: 'white', padding: '30px', borderRadius: '10px', color: 'black' }}>
+                    <div style={{ marginBottom: '20px' }}>
+                        <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold' }}>Selected Game</label>
+                        <div style={{ padding: '10px', backgroundColor: '#f0f0f0', borderRadius: '5px', textTransform: 'capitalize' }}>
+                            {selectedGame}
+                        </div>
+                    </div>
+
+                    <div style={{ marginBottom: '20px' }}>
+                        <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold' }}>Select Topic</label>
+                        <select
+                            value={selectedTopicId}
+                            onChange={(e) => setSelectedTopicId(e.target.value)}
+                            style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+                        >
+                            {topics.map(t => (
+                                <option key={t.id} value={t.id}>{t.title} ({t.vocabulary.length} words)</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div style={{ marginBottom: '30px' }}>
+                        <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold' }}>Number of Rounds</label>
+                        <input
+                            type="number"
+                            min="1"
+                            max="20"
+                            value={rounds}
+                            onChange={(e) => setRounds(parseInt(e.target.value))}
+                            style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+                        />
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '15px' }}>
+                        <Button variant="secondary" onClick={() => setStep(1)} style={{ flex: 1 }}>
+                            Back
+                        </Button>
+                        <Button onClick={handleCreateGame} disabled={isCreating} style={{ flex: 1 }}>
+                            {isCreating ? 'Creating...' : 'Create Lobby'}
+                        </Button>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default CreateGamePage;
