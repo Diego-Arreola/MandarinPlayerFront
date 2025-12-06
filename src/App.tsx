@@ -18,6 +18,7 @@ import TopicsPage from './pages/TopicsPage';
 import TopicDetailPage from './pages/TopicDetailPage';
 import CreateGamePage from './pages/CreateGamePage';
 import GameLobbyPage from './pages/GameLobbyPage';
+import MemoramaGamePage from './pages/MemoramaGamePage';
 
 function App() {
   return (
@@ -26,15 +27,18 @@ function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignUpPage />} />
-
+      <Route path="/joingame" element={<JoinGamePage />} />
+      <Route path="/lobby/:gameCode" element={<GameLobbyPage />} />
+      
       {/* Protected Routes - Only accessible to logged-in users */}
       <Route element={<ProtectedRoute />}>
         <Route path="/welcome" element={<WelcomePage />} />
-        <Route path="/joingame" element={<JoinGamePage />} />
+        
         <Route path="/topics" element={<TopicsPage />} />
         <Route path="/topics/:topicId" element={<TopicDetailPage />} />
         <Route path="/create-game" element={<CreateGamePage />} />
-        <Route path="/lobby/:gameCode" element={<GameLobbyPage />} />
+
+        <Route path="/game/memorama/:gameCode" element={<MemoramaGamePage />} />
       </Route>
 
       {/* In-game routes, all nested under a GameLayout to manage the session */}
