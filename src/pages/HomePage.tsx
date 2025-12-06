@@ -35,7 +35,7 @@ const HomePage = () => {
       <Button onClick={() => navigate('/signup')} variant="primary">
         Sign Up
       </Button>
-      <Button onClick={() => navigate('/joingame')} variant="primary">
+      <Button onClick={() => navigate('/join')} variant="primary">
         Join Game
       </Button>
     </div>

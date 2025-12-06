@@ -1,5 +1,7 @@
 import type { Topic } from './topicService';
 
+const API_URL = 'http://localhost:8080/api/games';
+
 export type GameType = 'kahoot' | 'jeopardy' | 'memorama';
 
 export interface GameConfig {
@@ -19,74 +21,47 @@ export interface GameSession {
     config: GameConfig;
     players: Player[];
     status: 'waiting' | 'playing' | 'finished';
-    topic?: Topic; // Populated topic data
+    topic?: Topic; 
 }
 
-const SESSIONS_KEY = 'mandarin_player_sessions';
-
-const getSessions = (): GameSession[] => {
-    const stored = localStorage.getItem(SESSIONS_KEY);
-    return stored ? JSON.parse(stored) : [];
-};
-
-const saveSessions = (sessions: GameSession[]) => {
-    localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
+const getHeaders = () => {
+    const token = localStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` 
+    };
 };
 
 export const gameService = {
     createGame: async (config: GameConfig, hostName: string): Promise<GameSession> => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const code = Math.floor(10000 + Math.random() * 90000).toString();
-                const session: GameSession = {
-                    code,
-                    config,
-                    players: [{ id: 'host', name: hostName, isHost: true }],
-                    status: 'waiting',
-                };
-
-                const sessions = getSessions();
-                sessions.push(session);
-                saveSessions(sessions);
-
-                resolve(session);
-            }, 500);
+        const response = await fetch(`${API_URL}/create`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify({ config, hostName }),
         });
+
+        if (!response.ok) throw new Error('Error al crear la partida');
+        return await response.json();
     },
 
     joinGame: async (code: string, playerName: string): Promise<GameSession> => {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                const sessions = getSessions();
-                const sessionIndex = sessions.findIndex(s => s.code === code);
-
-                if (sessionIndex === -1) {
-                    reject(new Error('Game not found'));
-                    return;
-                }
-
-                const session = sessions[sessionIndex];
-                const newPlayer: Player = {
-                    id: Date.now().toString(),
-                    name: playerName,
-                    isHost: false
-                };
-
-                session.players.push(newPlayer);
-                sessions[sessionIndex] = session;
-                saveSessions(sessions);
-
-                resolve(session);
-            }, 500);
+        const response = await fetch(`${API_URL}/join`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify({ code, playerName }),
         });
+
+        if (!response.ok) throw new Error('No se pudo unir a la partida');
+        return await response.json();
     },
 
     getSession: async (code: string): Promise<GameSession | undefined> => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const sessions = getSessions();
-                resolve(sessions.find(s => s.code === code));
-            }, 300);
+        const response = await fetch(`${API_URL}/${code}`, {
+            method: 'GET',
+            headers: getHeaders(),
         });
+
+        if (!response.ok) return undefined;
+        return await response.json();
     }
 };

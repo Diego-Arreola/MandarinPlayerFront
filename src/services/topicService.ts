@@ -1,3 +1,5 @@
+const API_URL = 'http://localhost:8080/api/topics';
+
 export interface Vocabulary {
   id: string;
   chinese: string;
@@ -12,73 +14,50 @@ export interface Topic {
   vocabulary: Vocabulary[];
 }
 
-const STORAGE_KEY = 'mandarin_player_topics';
-
-const getTopicsFromStorage = (): Topic[] => {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  return stored ? JSON.parse(stored) : [];
-};
-
-const saveTopicsToStorage = (topics: Topic[]) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(topics));
+const getHeaders = () => {
+    const token = localStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
 };
 
 export const topicService = {
   getTopics: async (): Promise<Topic[]> => {
-    // Simulate async delay
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(getTopicsFromStorage());
-      }, 300);
+    const response = await fetch(API_URL, {
+        method: 'GET',
+        headers: getHeaders()
     });
+    if (!response.ok) return [];
+    return await response.json();
   },
 
   getTopicById: async (id: string): Promise<Topic | undefined> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const topics = getTopicsFromStorage();
-        resolve(topics.find((t) => t.id === id));
-      }, 300);
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: 'GET',
+        headers: getHeaders()
     });
+    if (!response.ok) return undefined;
+    return await response.json();
   },
 
   createTopic: async (title: string, description: string): Promise<Topic> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const topics = getTopicsFromStorage();
-        const newTopic: Topic = {
-          id: Date.now().toString(),
-          title,
-          description,
-          vocabulary: [],
-        };
-        topics.push(newTopic);
-        saveTopicsToStorage(topics);
-        resolve(newTopic);
-      }, 300);
+    const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ title, description })
     });
+    if (!response.ok) throw new Error('Error al crear tema');
+    return await response.json();
   },
 
   addVocabulary: async (topicId: string, vocab: Omit<Vocabulary, 'id'>): Promise<Vocabulary> => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const topics = getTopicsFromStorage();
-        const topicIndex = topics.findIndex((t) => t.id === topicId);
-        
-        if (topicIndex === -1) {
-          reject(new Error('Topic not found'));
-          return;
-        }
-
-        const newVocab: Vocabulary = {
-          id: Date.now().toString(),
-          ...vocab,
-        };
-
-        topics[topicIndex].vocabulary.push(newVocab);
-        saveTopicsToStorage(topics);
-        resolve(newVocab);
-      }, 300);
+    const response = await fetch(`${API_URL}/${topicId}/vocabulary`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify(vocab)
     });
+    if (!response.ok) throw new Error('Error al agregar vocabulario');
+    return await response.json();
   },
 };
