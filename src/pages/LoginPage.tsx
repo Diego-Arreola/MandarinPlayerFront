@@ -35,6 +35,7 @@ const LoginPage = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          style={{ backgroundColor: 'transparent', border: '1px solid black', color: 'black' }}
         />
         <Input
           type="password"
@@ -42,6 +43,7 @@ const LoginPage = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          style={{ backgroundColor: 'transparent', border: '1px solid black', color: 'black' }}
         />
         {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
         <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
