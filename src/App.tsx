@@ -19,6 +19,7 @@ import TopicDetailPage from './pages/TopicDetailPage';
 import CreateGamePage from './pages/CreateGamePage';
 import GameLobbyPage from './pages/GameLobbyPage';
 import MemoramaGamePage from './pages/MemoramaGamePage';
+import KahootGamePage from './pages/KahootGamePage';
 
 function App() {
   return (
@@ -29,17 +30,18 @@ function App() {
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/joingame" element={<JoinGamePage />} />
       <Route path="/lobby/:gameCode" element={<GameLobbyPage />} />
-      
-      {/* Protected Routes - Only accessible to logged-in users */}
-      <Route element={<ProtectedRoute />}>
-        <Route path="/welcome" element={<WelcomePage />} />
-        
-        <Route path="/topics" element={<TopicsPage />} />
-        <Route path="/topics/:topicId" element={<TopicDetailPage />} />
-        <Route path="/create-game" element={<CreateGamePage />} />
 
-        <Route path="/game/memorama/:gameCode" element={<MemoramaGamePage />} />
-      </Route>
+      {/* Protected Routes - Only accessible to logged-in users */}
+      {/* <Route element={<ProtectedRoute />}> */}
+      <Route path="/welcome" element={<WelcomePage />} />
+
+      <Route path="/topics" element={<TopicsPage />} />
+      <Route path="/topics/:topicId" element={<TopicDetailPage />} />
+      <Route path="/create-game" element={<CreateGamePage />} />
+
+      <Route path="/game/memorama/:gameCode" element={<MemoramaGamePage />} />
+      <Route path="/kahoot/:gameCode" element={<KahootGamePage />} />
+      {/* </Route> */}
 
       {/* In-game routes, all nested under a GameLayout to manage the session */}
       <Route path="/game/:roomCode" element={<GameLayout />}>

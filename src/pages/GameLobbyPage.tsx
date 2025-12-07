@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import { gameService } from '../services/gameService';
 import type { GameSession } from '../services/gameService';
+import { topicService } from '../services/topicService';
 
 const GameLobbyPage = () => {
     const { gameCode } = useParams<{ gameCode: string }>();
@@ -22,19 +23,62 @@ const GameLobbyPage = () => {
             if (data) {
                 setSession(data);
             } else {
-                alert('Game not found');
-                navigate('/create-game');
+                // Check mock session in localStorage
+                const mockSessionStr = localStorage.getItem(`mock_session_${code}`);
+                if (mockSessionStr) {
+                    setSession(JSON.parse(mockSessionStr));
+                } else {
+                    alert('Game not found');
+                    navigate('/create-game');
+                }
             }
         } catch (error) {
             console.error('Failed to load session:', error);
+            // Check mock session in localStorage as fallback
+            const mockSessionStr = localStorage.getItem(`mock_session_${code}`);
+            if (mockSessionStr) {
+                setSession(JSON.parse(mockSessionStr));
+            }
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handleStartGame = () => {
-        alert('Starting game... (This feature is under construction)');
-        // navigate(`/game/${session?.code}/play`);
+    const handleStartGame = async () => {
+        if (session?.config.type === 'memorama') {
+            let vocabulary = session.topic?.vocabulary;
+
+            if (!vocabulary && session.config.topicId) {
+                try {
+                    // Try to fetch topic details to get vocabulary
+                    // This works if we have a real backend or if we mock topicService too (which we did partially in CreateGamePage but not globally)
+                    // We can reuse the mock logic from CreateGamePage or just rely on Memorama default.
+                    // Let's try to fetch.
+                    const topic = await topicService.getTopicById(session.config.topicId);
+                    if (topic) {
+                        vocabulary = topic.vocabulary;
+                    }
+                } catch (e) {
+                    console.warn("Could not fetch topic details", e);
+                }
+            }
+
+            navigate(`/game/memorama/${session.code}`, { state: { topicVocabulary: vocabulary, rounds: session.config.rounds } });
+        } else if (session?.config.type === 'kahoot') {
+            let vocabulary = session.topic?.vocabulary;
+            if (!vocabulary && session.config.topicId) {
+                try {
+                    const topic = await topicService.getTopicById(session.config.topicId);
+                    if (topic) vocabulary = topic.vocabulary;
+                } catch (e) {
+                    console.warn("Could not fetch topic details", e);
+                }
+            }
+            navigate(`/kahoot/${session.code}`, { state: { topicVocabulary: vocabulary, rounds: session.config.rounds } });
+        } else {
+            alert('Starting game... (This feature is under construction)');
+            // navigate(`/game/${session?.code}/play`);
+        }
     };
 
     if (isLoading) return <div style={{ textAlign: 'center', marginTop: '50px' }}>Loading lobby...</div>;
@@ -72,7 +116,7 @@ const GameLobbyPage = () => {
                             alignItems: 'center',
                             gap: '8px'
                         }}>
-                            <span style={{ fontSize: '1.2rem' }}>👤</span>
+                            {/* <span style={{ fontSize: '1.2rem' }}>👤</span> */}
                             {player.name} {player.isHost && '(Host)'}
                         </div>
                     ))}
