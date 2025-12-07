@@ -1,0 +1,15 @@
+:root {
+  --primary-color: #E2852E;
+  /* Orange */
+  --secondary-color: #F5C857;
+  /* Yellow-Orange */
+  --background-color: #ABE0F0;
+  /* Light Blue */
+  --text-color: #000000;
+  /* Black */
+  --accent-color: #FFEE91;
+  /* Light Yellow */
+  --input-bg-color: #ffffff;
+
+  font-family: 'Arial', sans-serif;
+}
