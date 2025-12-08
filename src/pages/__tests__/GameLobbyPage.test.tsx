@@ -256,4 +256,113 @@ describe('GameLobbyPage', () => {
       expect(content).toBeInTheDocument();
     }, { timeout: 2000 });
   });
+
+  it('loads mock session from localStorage when API returns null', async () => {
+    mockGetSession.mockResolvedValue(null);
+    const mockSessionData = JSON.stringify(mockGameSession);
+    localStorage.setItem('mock_session_ABC123', mockSessionData);
+
+    render(
+      <BrowserRouter>
+        <GameLobbyPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/ABC123/i)).toBeInTheDocument();
+    });
+
+    localStorage.removeItem('mock_session_ABC123');
+  });
+
+  it('fetches topic details when starting game without vocabulary', async () => {
+    const sessionWithoutTopic = {
+      ...mockGameSession,
+      topic: undefined
+    };
+    mockGetSession.mockResolvedValue(sessionWithoutTopic);
+    const user = userEvent.setup();
+
+    render(
+      <BrowserRouter>
+        <GameLobbyPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /start game|start/i })).toBeInTheDocument();
+    });
+
+    const startButton = screen.getByRole('button', { name: /start game|start/i });
+    await user.click(startButton);
+
+    await waitFor(() => {
+      expect(mockGetTopicById).toHaveBeenCalledWith('1');
+    });
+  });
+
+  it('handles unsupported game type', async () => {
+    const unsupportedSession = {
+      ...mockGameSession,
+      config: { ...mockGameSession.config, type: 'jeopardy' as any }
+    };
+    mockGetSession.mockResolvedValue(unsupportedSession);
+    const user = userEvent.setup();
+
+    render(
+      <BrowserRouter>
+        <GameLobbyPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /start game|start/i })).toBeInTheDocument();
+    });
+
+    const startButton = screen.getByRole('button', { name: /start game|start/i });
+    await user.click(startButton);
+
+    // Alert should be called for unsupported game type
+    await waitFor(() => {
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+  });
+
+  it('leaves lobby when leave button is clicked', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <BrowserRouter>
+        <GameLobbyPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      const buttons = screen.getAllByRole('button');
+      expect(buttons.length).toBeGreaterThan(0);
+    });
+
+    const leaveButton = screen.getByRole('button', { name: /leave|welcome/i });
+    await user.click(leaveButton);
+
+    expect(mockNavigate).toHaveBeenCalledWith('/welcome');
+  });
+
+  it('uses mock session from localStorage when API fails', async () => {
+    mockGetSession.mockRejectedValue(new Error('API error'));
+    const mockSessionData = JSON.stringify(mockGameSession);
+    localStorage.setItem('mock_session_ABC123', mockSessionData);
+
+    render(
+      <BrowserRouter>
+        <GameLobbyPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/ABC123/i)).toBeInTheDocument();
+    });
+
+    localStorage.removeItem('mock_session_ABC123');
+  });
 });

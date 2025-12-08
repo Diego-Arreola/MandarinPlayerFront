@@ -282,5 +282,86 @@ describe('CreateGamePage', () => {
       });
     }
   });
+
+  it('handles topic loading failure gracefully', async () => {
+    mockGetTopics.mockRejectedValue(new Error('API error'));
+
+    render(
+      <BrowserRouter>
+        <CreateGamePage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      // Component should still render with fallback mock data
+      expect(screen.getByText(/kahoot/i)).toBeInTheDocument();
+    });
+  });
+
+  it('handles createGame failure and uses mock session', async () => {
+    const user = userEvent.setup();
+    mockCreateGame.mockRejectedValue(new Error('Creation failed'));
+
+    render(
+      <BrowserRouter>
+        <CreateGamePage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/memorama/i)).toBeInTheDocument();
+    });
+
+    const memoramaDiv = screen.getByText(/memorama/i).closest('div[style*="cursor"]');
+    if (memoramaDiv) {
+      await user.click(memoramaDiv);
+    }
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /configure game/i })).toBeInTheDocument();
+    });
+
+    const createButton = screen.getAllByRole('button').find(btn => btn.textContent?.includes('Create Lobby'));
+    if (createButton) {
+      await user.click(createButton);
+      
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalled();
+      });
+    }
+  });
+
+  it('navigates to lobby after successful game creation', async () => {
+    const user = userEvent.setup();
+    mockCreateGame.mockResolvedValue({ code: 'TEST123' });
+
+    render(
+      <BrowserRouter>
+        <CreateGamePage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/kahoot/i)).toBeInTheDocument();
+    });
+
+    const kahootDiv = screen.getByText(/kahoot/i).closest('div[style*="cursor"]');
+    if (kahootDiv) {
+      await user.click(kahootDiv);
+    }
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /configure game/i })).toBeInTheDocument();
+    });
+
+    const createButton = screen.getAllByRole('button').find(btn => btn.textContent?.includes('Create Lobby'));
+    if (createButton) {
+      await user.click(createButton);
+      
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith('/lobby/TEST123');
+      });
+    }
+  });
 });
 

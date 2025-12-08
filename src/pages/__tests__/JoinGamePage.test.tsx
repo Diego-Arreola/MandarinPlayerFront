@@ -234,4 +234,77 @@ describe('JoinGamePage', () => {
       expect(screen.getByText(/joining/i)).toBeInTheDocument();
     });
   });
+
+  it('handles join failure with mock session fallback', async () => {
+    const user = userEvent.setup();
+    mockJoinGame.mockRejectedValue(new Error('Join failed'));
+    
+    const mockSession = {
+      code: 'ABC12',
+      players: [{ id: '1', name: 'Host', isHost: true }],
+      config: { type: 'memorama', topicId: '1', rounds: 5 }
+    };
+    
+    (window.localStorage.getItem as any).mockReturnValue(JSON.stringify(mockSession));
+
+    render(
+      <BrowserRouter>
+        <JoinGamePage />
+      </BrowserRouter>
+    );
+
+    const input = screen.getByPlaceholderText(/enter game code/i);
+    await user.type(input, 'ABC12');
+
+    const joinButton = screen.getByRole('button', { name: /join game/i });
+    await user.click(joinButton);
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('/lobby/ABC12');
+    });
+  });
+
+  it('shows alert when join fails without mock session', async () => {
+    const user = userEvent.setup();
+    mockJoinGame.mockRejectedValue(new Error('Join failed'));
+    (window.localStorage.getItem as any).mockReturnValue(null);
+    
+    // Mock alert
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+    render(
+      <BrowserRouter>
+        <JoinGamePage />
+      </BrowserRouter>
+    );
+
+    const input = screen.getByPlaceholderText(/enter game code/i);
+    await user.type(input, 'ABC12');
+
+    const joinButton = screen.getByRole('button', { name: /join game/i });
+    await user.click(joinButton);
+
+    await waitFor(() => {
+      expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('Failed to join'));
+    });
+
+    alertSpy.mockRestore();
+  });
+
+  it('prevents submission when code is empty', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <BrowserRouter>
+        <JoinGamePage />
+      </BrowserRouter>
+    );
+
+    const joinButton = screen.getByRole('button', { name: /join game/i });
+    await user.click(joinButton);
+
+    await waitFor(() => {
+      expect(mockJoinGame).not.toHaveBeenCalled();
+    }, { timeout: 500 });
+  });
 });
