@@ -43,7 +43,7 @@ describe('topicService', () => {
       const mockTopics: Topic[] = [
         {
           id: '1',
-          title: 'Test Topic',
+          name: 'Test Topic',
           description: 'Test Description',
           vocabulary: [],
         },
@@ -60,7 +60,7 @@ describe('topicService', () => {
 
       expect(topics).toEqual(mockTopics);
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/topics'),
+        expect.stringContaining('/themes'),
         expect.objectContaining({
           method: 'GET',
           headers: expect.objectContaining({ 'Authorization': 'Bearer test-token' }),
@@ -79,7 +79,7 @@ describe('topicService', () => {
       const topics = await topicService.getTopics();
 
       expect(topics).toHaveLength(2); // Mock data has 2 topics
-      expect(topics[0].title).toBe('Greetings');
+      expect(topics[0].name).toBe('Greetings');
     });
   });
 
@@ -87,7 +87,7 @@ describe('topicService', () => {
     it('fetches single topic by ID', async () => {
       const mockTopic: Topic = {
         id: '1',
-        title: 'Test Topic',
+        name: 'Test Topic',
         description: 'Test Description',
         vocabulary: [],
       };
@@ -103,7 +103,7 @@ describe('topicService', () => {
 
       expect(topic).toEqual(mockTopic);
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/topics/1'),
+        expect.stringContaining('/themes/1'),
         expect.any(Object)
       );
     });
@@ -118,7 +118,7 @@ describe('topicService', () => {
 
       const topic = await topicService.getTopicById('1');
 
-      expect(topic?.title).toBe('Greetings');
+      expect(topic?.name).toBe('Greetings');
     });
 
     it('returns undefined for non-existent topic in mock data', async () => {
@@ -139,7 +139,7 @@ describe('topicService', () => {
     it('creates a new topic', async () => {
       const mockTopic: Topic = {
         id: '3',
-        title: 'New Topic',
+        name: 'New Topic',
         description: 'New Description',
         vocabulary: [],
       };
@@ -155,10 +155,10 @@ describe('topicService', () => {
 
       expect(topic).toEqual(mockTopic);
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/topics'),
+        expect.stringContaining('/themes'),
         expect.objectContaining({
           method: 'POST',
-          body: JSON.stringify({ title: 'New Topic', description: 'New Description' }),
+          body: JSON.stringify({ name: 'New Topic', description: 'New Description' }),
         })
       );
     });
@@ -181,9 +181,9 @@ describe('topicService', () => {
     it('adds vocabulary to a topic', async () => {
       const mockVocab: Vocabulary = {
         id: '100',
-        chinese: '你好',
+        character: '你好',
         pinyin: 'Nǐ hǎo',
-        spanish: 'Hola',
+        translation: 'Hola',
       };
 
       const mockResponse = new Response(JSON.stringify(mockVocab), {
@@ -194,20 +194,20 @@ describe('topicService', () => {
       vi.mocked(fetch).mockResolvedValue(mockResponse as any);
 
       const vocab = await topicService.addVocabulary('1', {
-        chinese: '你好',
+        character: '你好',
         pinyin: 'Nǐ hǎo',
-        spanish: 'Hola',
+        translation: 'Hola',
       });
 
       expect(vocab).toEqual(mockVocab);
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/topics/1/vocabulary'),
+        expect.stringContaining('/themes/1'),
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify({
-            chinese: '你好',
+            character: '你好',
             pinyin: 'Nǐ hǎo',
-            spanish: 'Hola',
+            translation: 'Hola',
           }),
         })
       );
@@ -223,9 +223,9 @@ describe('topicService', () => {
 
       await expect(
         topicService.addVocabulary('1', {
-          chinese: '你好',
+          character: '你好',
           pinyin: 'Nǐ hǎo',
-          spanish: 'Hola',
+          translation: 'Hola',
         })
       ).rejects.toThrow('Error al agregar vocabulario');
     });

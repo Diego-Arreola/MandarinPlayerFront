@@ -30,8 +30,8 @@ const mockTopic = {
   title: 'Greetings',
   description: 'Basic greetings',
   vocabulary: [
-    { id: '1', chinese: '你好', pinyin: 'Nǐ hǎo', spanish: 'Hello' },
-    { id: '2', chinese: '谢谢', pinyin: 'Xièxiè', spanish: 'Thank you' },
+    { id: '1', character: '你好', pinyin: 'Nǐ hǎo', translation: 'Hello' },
+    { id: '2', character: '谢谢', pinyin: 'Xièxiè', translation: 'Thank you' },
   ]
 };
 
@@ -43,7 +43,7 @@ describe('TopicDetailPage', () => {
   });
 
   it('displays loading state initially', () => {
-    mockGetTopicById.mockImplementation(() => new Promise(() => {})); // Never resolves
+    mockGetTopicById.mockImplementation(() => new Promise(() => { })); // Never resolves
 
     render(
       <BrowserRouter>
@@ -198,7 +198,7 @@ describe('TopicDetailPage', () => {
   });
 
   it('handles errors when loading topic', async () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
     mockGetTopicById.mockRejectedValue(new Error('Failed to load'));
 
     render(
