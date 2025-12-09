@@ -17,6 +17,7 @@ export const API_BASE_URL = getApiBaseUrl();
 
 export const API_ENDPOINTS = {
   AUTH: `${API_BASE_URL}/api/auth`,
-  TOPICS: `${API_BASE_URL}/api/topics`,
-  GAMES: `${API_BASE_URL}/api/games`,
+  TOPICS: `${API_BASE_URL}/api/themes`,
+  WORDS: `${API_BASE_URL}/api/words`,
+  GAMES: `${API_BASE_URL}/api/matches`,
 } as const;

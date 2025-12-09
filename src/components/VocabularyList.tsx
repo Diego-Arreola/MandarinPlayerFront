@@ -28,9 +28,9 @@ const VocabularyList: React.FC<VocabularyListProps> = ({ vocabulary }) => {
                 <tbody>
                     {vocabulary.map((vocab) => (
                         <tr key={vocab.id} style={{ borderBottom: '1px solid #eee' }}>
-                            <td style={{ padding: '12px', fontSize: '1.1rem', fontWeight: 'bold' }}>{vocab.chinese}</td>
+                            <td style={{ padding: '12px', fontSize: '1.1rem', fontWeight: 'bold' }}>{vocab.character}</td>
                             <td style={{ padding: '12px', color: '#555' }}>{vocab.pinyin}</td>
-                            <td style={{ padding: '12px' }}>{vocab.spanish}</td>
+                            <td style={{ padding: '12px' }}>{vocab.translation}</td>
                         </tr>
                     ))}
                 </tbody>

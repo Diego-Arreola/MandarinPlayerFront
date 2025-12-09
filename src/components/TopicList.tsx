@@ -32,7 +32,7 @@ const TopicList: React.FC<TopicListProps> = ({ topics }) => {
                     }}
                 >
                     <div>
-                        <h3 style={{ marginTop: 0, color: 'var(--primary-color)' }}>{topic.title}</h3>
+                        <h3 className="text-xl font-bold mb-2 text-primary">{topic.name}</h3>
                         <p style={{ color: '#555', fontSize: '0.9rem' }}>{topic.description}</p>
                         <p style={{ fontSize: '0.8rem', color: '#888' }}>
                             {topic.vocabulary.length} words
