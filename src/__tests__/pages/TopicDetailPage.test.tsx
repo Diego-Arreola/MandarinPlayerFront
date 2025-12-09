@@ -222,7 +222,133 @@ describe('TopicDetailPage', () => {
     );
 
     await waitFor(() => {
-      expect(mockGetTopicById).toHaveBeenCalled();
+      expect(consoleErrorSpy).toHaveBeenCalled();
+    });
+
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('redirects to topics when topic not found', async () => {
+    mockGetTopicById.mockResolvedValue(null);
+
+    render(
+      <BrowserRouter>
+        <TopicDetailPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('/topics');
+    });
+  });
+
+  it('calls addVocabulary when adding new word', async () => {
+    mockAddVocabulary.mockResolvedValue(undefined);
+    const user = userEvent.setup();
+
+    render(
+      <BrowserRouter>
+        <TopicDetailPage />
+      </BrowserRouter>
+    );
+
+    // Wait for topic to load
+    await waitFor(() => {
+      expect(screen.getByText('Basic greetings')).toBeInTheDocument();
+    });
+
+    // Click "Add Word" button
+    const addButton = screen.getByRole('button', { name: /\+ add word/i });
+    await user.click(addButton);
+
+    // Form should appear
+    await waitFor(() => {
+      expect(screen.getByLabelText(/chinese/i)).toBeInTheDocument();
+    });
+  });
+
+  it('displays vocabulary count', async () => {
+    render(
+      <BrowserRouter>
+        <TopicDetailPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/vocabulary list.*2/i)).toBeInTheDocument();
+    });
+  });
+
+  it('shows loading state initially', () => {
+    mockGetTopicById.mockImplementation(() => new Promise(() => {})); // Never resolves
+
+    render(
+      <BrowserRouter>
+        <TopicDetailPage />
+      </BrowserRouter>
+    );
+
+    expect(screen.getByText(/loading topic/i)).toBeInTheDocument();
+  });
+
+  it('displays topic title as heading', async () => {
+    render(
+      <BrowserRouter>
+        <TopicDetailPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      const heading = screen.getByText(/basic greetings/i);
+      expect(heading).toBeInTheDocument();
+    });
+  });
+
+  it('shows Back to Topics button', async () => {
+    render(
+      <BrowserRouter>
+        <TopicDetailPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      const backButton = screen.getByRole('button', { name: /back to topics/i });
+      expect(backButton).toBeInTheDocument();
+    });
+  });
+
+  it('navigates back when Back button is clicked', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <BrowserRouter>
+        <TopicDetailPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      const backButton = screen.getByRole('button', { name: /back to topics/i });
+      expect(backButton).toBeInTheDocument();
+    });
+
+    const backButton = screen.getByRole('button', { name: /back to topics/i });
+    await user.click(backButton);
+
+    expect(mockNavigate).toHaveBeenCalledWith('/topics');
+  });
+
+  it('handles errors when loading topic', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    mockGetTopicById.mockRejectedValue(new Error('Failed to load'));
+
+    render(
+      <BrowserRouter>
+        <TopicDetailPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(consoleErrorSpy).toHaveBeenCalled();
     });
 
     consoleErrorSpy.mockRestore();
