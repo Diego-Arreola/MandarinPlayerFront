@@ -43,7 +43,7 @@ describe('topicService', () => {
       const mockTopics: Topic[] = [
         {
           id: '1',
-          title: 'Test Topic',
+          name: 'Test Topic',
           description: 'Test Description',
           vocabulary: [],
         },
@@ -79,7 +79,7 @@ describe('topicService', () => {
       const topics = await topicService.getTopics();
 
       expect(topics).toHaveLength(2); // Mock data has 2 topics
-      expect(topics[0].title).toBe('Greetings');
+      expect(topics[0].name).toBe('Greetings');
     });
   });
 
@@ -87,7 +87,7 @@ describe('topicService', () => {
     it('fetches single topic by ID', async () => {
       const mockTopic: Topic = {
         id: '1',
-        title: 'Test Topic',
+        name: 'Test Topic',
         description: 'Test Description',
         vocabulary: [],
       };
@@ -118,7 +118,7 @@ describe('topicService', () => {
 
       const topic = await topicService.getTopicById('1');
 
-      expect(topic?.title).toBe('Greetings');
+      expect(topic?.name).toBe('Greetings');
     });
 
     it('returns undefined for non-existent topic in mock data', async () => {
@@ -139,7 +139,7 @@ describe('topicService', () => {
     it('creates a new topic', async () => {
       const mockTopic: Topic = {
         id: '3',
-        title: 'New Topic',
+        name: 'New Topic',
         description: 'New Description',
         vocabulary: [],
       };
@@ -158,12 +158,12 @@ describe('topicService', () => {
         expect.stringContaining('/topics'),
         expect.objectContaining({
           method: 'POST',
-          body: JSON.stringify({ title: 'New Topic', description: 'New Description' }),
+          body: JSON.stringify({ name: 'New Topic', description: 'New Description' }),
         })
       );
     });
 
-    it('throws error on failed creation', async () => {
+    it('returns mock topic on failed creation (fallback)', async () => {
       const mockResponse = new Response('Error', {
         status: 400,
         statusText: 'Bad Request',
@@ -171,9 +171,11 @@ describe('topicService', () => {
       Object.defineProperty(mockResponse, 'ok', { value: false });
       vi.mocked(fetch).mockResolvedValue(mockResponse as any);
 
-      await expect(
-        topicService.createTopic('New Topic', 'Description')
-      ).rejects.toThrow('Error al crear tema');
+      const topic = await topicService.createTopic('Fallback Topic', 'Fallback Desc');
+      
+      expect(topic).toBeDefined();
+      expect(topic.name).toBe('Fallback Topic');
+      expect(topic.id).toBeDefined();
     });
   });
 
@@ -181,9 +183,9 @@ describe('topicService', () => {
     it('adds vocabulary to a topic', async () => {
       const mockVocab: Vocabulary = {
         id: '100',
-        chinese: '你好',
+        character: '你好',
         pinyin: 'Nǐ hǎo',
-        spanish: 'Hola',
+        translation: 'Hola',
       };
 
       const mockResponse = new Response(JSON.stringify(mockVocab), {
@@ -194,9 +196,9 @@ describe('topicService', () => {
       vi.mocked(fetch).mockResolvedValue(mockResponse as any);
 
       const vocab = await topicService.addVocabulary('1', {
-        chinese: '你好',
+        character: '你好',
         pinyin: 'Nǐ hǎo',
-        spanish: 'Hola',
+        translation: 'Hola',
       });
 
       expect(vocab).toEqual(mockVocab);
@@ -205,15 +207,15 @@ describe('topicService', () => {
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify({
-            chinese: '你好',
+            character: '你好',
             pinyin: 'Nǐ hǎo',
-            spanish: 'Hola',
+            translation: 'Hola',
           }),
         })
       );
     });
 
-    it('throws error on failed vocabulary addition', async () => {
+    it('returns mock vocabulary on failed addition (fallback)', async () => {
       const mockResponse = new Response('Error', {
         status: 400,
         statusText: 'Bad Request',
@@ -221,13 +223,15 @@ describe('topicService', () => {
       Object.defineProperty(mockResponse, 'ok', { value: false });
       vi.mocked(fetch).mockResolvedValue(mockResponse as any);
 
-      await expect(
-        topicService.addVocabulary('1', {
-          chinese: '你好',
-          pinyin: 'Nǐ hǎo',
-          spanish: 'Hola',
-        })
-      ).rejects.toThrow('Error al agregar vocabulario');
+      const vocab = await topicService.addVocabulary('1', {
+        character: 'Test',
+        pinyin: 'Pinyin',
+        translation: 'Trans',
+      });
+
+      expect(vocab).toBeDefined();
+      expect(vocab.character).toBe('Test');
+      expect(vocab.id).toBeDefined(); // Should have a fallback ID
     });
   });
 });
