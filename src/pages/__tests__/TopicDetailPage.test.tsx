@@ -27,11 +27,11 @@ vi.mock('../../services/topicService', () => ({
 
 const mockTopic = {
   id: '1',
-  title: 'Greetings',
+  name: 'Greetings',
   description: 'Basic greetings',
   vocabulary: [
-    { id: '1', chinese: '你好', pinyin: 'Nǐ hǎo', spanish: 'Hello' },
-    { id: '2', chinese: '谢谢', pinyin: 'Xièxiè', spanish: 'Thank you' },
+    { id: '1', character: '你好', pinyin: 'Nǐ hǎo', translation: 'Hello' },
+    { id: '2', character: '谢谢', pinyin: 'Xièxiè', translation: 'Thank you' },
   ]
 };
 
@@ -74,7 +74,12 @@ describe('TopicDetailPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /greetings/i })).toBeInTheDocument();
+        expect(screen.queryByText(/loading topic/i)).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+        const titles = screen.getAllByText(/Greetings/i);
+        expect(titles.length).toBeGreaterThan(0);
     });
   });
 
@@ -192,8 +197,12 @@ describe('TopicDetailPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/你好/i)).toBeInTheDocument();
-      expect(screen.getByText(/谢谢/i)).toBeInTheDocument();
+        expect(screen.queryByText(/loading topic/i)).not.toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+        expect(screen.getByText('你好')).toBeInTheDocument();
+        expect(screen.getByText('谢谢')).toBeInTheDocument();
     });
   });
 

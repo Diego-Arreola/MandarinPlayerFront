@@ -20,17 +20,17 @@ const VocabularyList: React.FC<VocabularyListProps> = ({ vocabulary }) => {
             <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px', color: 'black' }}>
                 <thead>
                     <tr style={{ backgroundColor: '#f0f0f0', textAlign: 'left' }}>
-                        <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Chinese</th>
-                        <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Pinyin</th>
-                        <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Spanish</th>
+                        <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Character/Word</th>
+                        <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Pinyin/Pronunciation</th>
+                        <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Meaning</th>
                     </tr>
                 </thead>
                 <tbody>
                     {vocabulary.map((vocab) => (
                         <tr key={vocab.id} style={{ borderBottom: '1px solid #eee' }}>
-                            <td style={{ padding: '12px', fontSize: '1.1rem', fontWeight: 'bold' }}>{vocab.chinese}</td>
+                            <td style={{ padding: '12px', fontSize: '1.1rem', fontWeight: 'bold' }}>{vocab.character}</td>
                             <td style={{ padding: '12px', color: '#555' }}>{vocab.pinyin}</td>
-                            <td style={{ padding: '12px' }}>{vocab.spanish}</td>
+                            <td style={{ padding: '12px' }}>{vocab.translation}</td>
                         </tr>
                     ))}
                 </tbody>

@@ -88,9 +88,9 @@ describe('AddVocabularyForm Component', () => {
 
     expect(handleSubmit).toHaveBeenCalledWith(
       expect.objectContaining({
-        chinese: '你好',
+        character: '你好',
         pinyin: 'Nǐ hǎo',
-        spanish: 'Hola',
+        translation: 'Hola',
       })
     );
   });

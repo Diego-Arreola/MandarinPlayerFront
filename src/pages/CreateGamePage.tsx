@@ -32,22 +32,22 @@ const CreateGamePage = () => {
                 const mockTopics: Topic[] = [
                     {
                         id: '1',
-                        title: 'Greetings',
+                        name: 'Greetings',
                         description: 'Basic greetings',
                         vocabulary: [
-                            { id: '1', chinese: '你好', pinyin: 'Nǐ hǎo', spanish: 'Hello' },
-                            { id: '2', chinese: '谢谢', pinyin: 'Xièxiè', spanish: 'Thank you' },
-                            { id: '3', chinese: '再见', pinyin: 'Zàijiàn', spanish: 'Goodbye' }
+                            { id: '1', character: '你好', pinyin: 'Nǐ hǎo', translation: 'Hello' },
+                            { id: '2', character: '谢谢', pinyin: 'Xièxiè', translation: 'Thank you' },
+                            { id: '3', character: '再见', pinyin: 'Zàijiàn', translation: 'Goodbye' }
                         ]
                     },
                     {
                         id: '2',
-                        title: 'Numbers',
+                        name: 'Numbers',
                         description: '1-3',
                         vocabulary: [
-                            { id: '4', chinese: '一', pinyin: 'Yī', spanish: 'One' },
-                            { id: '5', chinese: '二', pinyin: 'Èr', spanish: 'Two' },
-                            { id: '6', chinese: '三', pinyin: 'Sān', spanish: 'Three' }
+                            { id: '4', character: '一', pinyin: 'Yī', translation: 'One' },
+                            { id: '5', character: '二', pinyin: 'Èr', translation: 'Two' },
+                            { id: '6', character: '三', pinyin: 'Sān', translation: 'Three' }
                         ]
                     }
                 ];
@@ -60,12 +60,12 @@ const CreateGamePage = () => {
             const mockTopics: Topic[] = [
                 {
                     id: '1',
-                    title: 'Greetings',
+                    name: 'Greetings',
                     description: 'Basic greetings',
                     vocabulary: [
-                        { id: '1', chinese: '你好', pinyin: 'Nǐ hǎo', spanish: 'Hello' },
-                        { id: '2', chinese: '谢谢', pinyin: 'Xièxiè', spanish: 'Thank you' },
-                        { id: '3', chinese: '再见', pinyin: 'Zàijiàn', spanish: 'Goodbye' }
+                        { id: '1', character: '你好', pinyin: 'Nǐ hǎo', translation: 'Hello' },
+                        { id: '2', character: '谢谢', pinyin: 'Xièxiè', translation: 'Thank you' },
+                        { id: '3', character: '再见', pinyin: 'Zàijiàn', translation: 'Goodbye' }
                     ]
                 }
             ];
@@ -173,7 +173,7 @@ const CreateGamePage = () => {
                             style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
                         >
                             {topics.map(t => (
-                                <option key={t.id} value={t.id}>{t.title} ({t.vocabulary.length} words)</option>
+                                <option key={t.id} value={t.id}>{t.name} ({t.vocabulary.length} words)</option>
                             ))}
                         </select>
                     </div>

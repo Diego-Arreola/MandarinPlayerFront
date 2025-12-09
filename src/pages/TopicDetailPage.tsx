@@ -63,13 +63,13 @@ const TopicDetailPage = () => {
                 </Button>
 
                 <div style={{ borderBottom: '1px solid #eee', paddingBottom: '20px' }}>
-                    <h2 style={{ color: 'var(--secondary-color)', margin: '0 0 10px 0' }}>{topic.title}</h2>
+                    <h2 style={{ color: 'var(--secondary-color)', margin: '0 0 10px 0' }}>{topic.name}</h2>
                     <p style={{ color: '#666', margin: 0 }}>{topic.description}</p>
                 </div>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <h3 style={{ margin: 0 }}>Vocabulary List ({topic.vocabulary.length})</h3>
+                <h3 style={{ margin: 0 }}>Vocabulary List ({topic.vocabulary?.length || 0})</h3>
                 {!isAdding && (
                     <Button onClick={() => setIsAdding(true)}>
                         + Add Word
@@ -84,7 +84,8 @@ const TopicDetailPage = () => {
                 </div>
             )}
 
-            <VocabularyList vocabulary={topic.vocabulary} />
+            <h1 className="text-3xl font-bold text-gray-900">{topic?.name}</h1>
+            <VocabularyList vocabulary={topic.vocabulary || []} />
         </div>
     );
 };

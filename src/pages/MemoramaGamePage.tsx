@@ -31,9 +31,9 @@ const MemoramaGamePage = () => {
     if (!vocabulary || vocabulary.length === 0) {
       console.log("No vocabulary provided. Using default 'Greetings' topic.");
       vocabulary = [
-        { id: '1', chinese: '你好', pinyin: 'Nǐ hǎo', spanish: 'Hola' },
-        { id: '2', chinese: '谢谢', pinyin: 'Xièxiè', spanish: 'Gracias' },
-        { id: '3', chinese: '再见', pinyin: 'Zàijiàn', spanish: 'Adiós' }
+        { id: '1', character: '你好', pinyin: 'Nǐ hǎo', translation: 'Hola' },
+        { id: '2', character: '谢谢', pinyin: 'Xièxiè', translation: 'Gracias' },
+        { id: '3', character: '再见', pinyin: 'Zàijiàn', translation: 'Adiós' }
       ];
     }
 
@@ -45,8 +45,8 @@ const MemoramaGamePage = () => {
 
     // Create card pairs (Hanzi and Meaning)
     const gameCards: Card[] = vocabulary.flatMap((item): Card[] => ([
-      { id: `${item.id}-hanzi`, type: 'hanzi', content: item.chinese, pairId: item.id },
-      { id: `${item.id}-meaning`, type: 'meaning', content: item.spanish, pairId: item.id }
+      { id: `${item.id}-hanzi`, type: 'hanzi', content: item.character, pairId: item.id },
+      { id: `${item.id}-meaning`, type: 'meaning', content: item.translation, pairId: item.id }
     ]));
 
     // Shuffle the cards and return as initial state

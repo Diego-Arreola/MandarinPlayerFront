@@ -8,21 +8,21 @@ interface AddVocabularyFormProps {
 }
 
 const AddVocabularyForm: React.FC<AddVocabularyFormProps> = ({ onSubmit, onCancel }) => {
-    const [chinese, setChinese] = useState('');
+    const [character, setCharacter] = useState('');
     const [pinyin, setPinyin] = useState('');
-    const [spanish, setSpanish] = useState('');
+    const [translation, setTranslation] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!chinese.trim() || !spanish.trim()) return;
+        if (!character.trim() || !translation.trim()) return;
 
         setIsSubmitting(true);
         try {
-            await onSubmit({ chinese, pinyin, spanish });
-            setChinese('');
+            await onSubmit({ character, pinyin, translation });
+            setCharacter('');
             setPinyin('');
-            setSpanish('');
+            setTranslation('');
         } finally {
             setIsSubmitting(false);
         }
@@ -37,8 +37,8 @@ const AddVocabularyForm: React.FC<AddVocabularyFormProps> = ({ onSubmit, onCance
                 <input
                     id="chinese"
                     type="text"
-                    value={chinese}
-                    onChange={(e) => setChinese(e.target.value)}
+                    value={character}
+                    onChange={(e) => setCharacter(e.target.value)}
                     placeholder="e.g., 你好"
                     required
                     style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc', color: 'black' }}
@@ -66,8 +66,8 @@ const AddVocabularyForm: React.FC<AddVocabularyFormProps> = ({ onSubmit, onCance
                 <input
                     id="spanish"
                     type="text"
-                    value={spanish}
-                    onChange={(e) => setSpanish(e.target.value)}
+                    value={translation}
+                    onChange={(e) => setTranslation(e.target.value)}
                     placeholder="e.g., Hola"
                     required
                     style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc', color: 'black' }}
@@ -78,7 +78,7 @@ const AddVocabularyForm: React.FC<AddVocabularyFormProps> = ({ onSubmit, onCance
                 <Button type="button" variant="secondary" onClick={onCancel} disabled={isSubmitting}>
                     Cancel
                 </Button>
-                <Button type="submit" disabled={isSubmitting || !chinese.trim() || !spanish.trim()}>
+                <Button type="submit" disabled={isSubmitting || !character.trim() || !translation.trim()}>
                     {isSubmitting ? 'Adding...' : 'Add Word'}
                 </Button>
             </div>
