@@ -17,21 +17,21 @@ vi.mock('react-router-dom', async () => {
 const mockTopics: Topic[] = [
   {
     id: '1',
-    title: 'Basic Greetings',
+    name: 'Basic Greetings',
     description: 'Learn how to greet in Mandarin',
     vocabulary: [
-      { id: '1', chinese: '你好', pinyin: 'Nǐ hǎo', spanish: 'Hola' },
-      { id: '2', chinese: '再见', pinyin: 'Zàijiàn', spanish: 'Adiós' },
+      { id: '1', character: '你好', pinyin: 'Nǐ hǎo', translation: 'Hola' },
+      { id: '2', character: '再见', pinyin: 'Zàijiàn', translation: 'Adiós' },
     ],
   },
   {
     id: '2',
-    title: 'Numbers',
+    name: 'Numbers',
     description: 'Learn Mandarin numbers',
     vocabulary: [
-      { id: '3', chinese: '一', pinyin: 'Yī', spanish: 'Uno' },
-      { id: '4', chinese: '二', pinyin: 'Èr', spanish: 'Dos' },
-      { id: '5', chinese: '三', pinyin: 'Sān', spanish: 'Tres' },
+      { id: '3', character: '一', pinyin: 'Yī', translation: 'Uno' },
+      { id: '4', character: '二', pinyin: 'Èr', translation: 'Dos' },
+      { id: '5', character: '三', pinyin: 'Sān', translation: 'Tres' },
     ],
   },
 ];
@@ -39,7 +39,7 @@ const mockTopics: Topic[] = [
 describe('TopicList Component', () => {
   it('renders empty state when no topics', () => {
     render(<TopicList topics={[]} />);
-    
+
     expect(screen.getByText(/no topics found/i)).toBeInTheDocument();
   });
 
@@ -49,11 +49,11 @@ describe('TopicList Component', () => {
         <TopicList topics={mockTopics} />
       </BrowserRouter>
     );
-    
+
     // Verify descriptions are rendered (more reliable than titles)
     expect(screen.getByText('Learn how to greet in Mandarin')).toBeInTheDocument();
     expect(screen.getByText('Learn Mandarin numbers')).toBeInTheDocument();
-    
+
     // Verify buttons exist for each topic
     const buttons = screen.getAllByRole('button', { name: /view vocabulary/i });
     expect(buttons.length).toBe(2);
@@ -65,7 +65,7 @@ describe('TopicList Component', () => {
         <TopicList topics={mockTopics} />
       </BrowserRouter>
     );
-    
+
     expect(screen.getByText('Learn how to greet in Mandarin')).toBeInTheDocument();
     expect(screen.getByText('Learn Mandarin numbers')).toBeInTheDocument();
   });
@@ -76,7 +76,7 @@ describe('TopicList Component', () => {
         <TopicList topics={mockTopics} />
       </BrowserRouter>
     );
-    
+
     const counts = screen.getAllByText(/words/);
     expect(counts).toHaveLength(2);
     expect(screen.getByText('2 words')).toBeInTheDocument();
@@ -89,7 +89,7 @@ describe('TopicList Component', () => {
         <TopicList topics={mockTopics} />
       </BrowserRouter>
     );
-    
+
     const buttons = screen.getAllByRole('button', { name: /view vocabulary/i });
     expect(buttons).toHaveLength(2);
   });
@@ -100,10 +100,10 @@ describe('TopicList Component', () => {
         <TopicList topics={mockTopics} />
       </BrowserRouter>
     );
-    
+
     const buttons = screen.getAllByRole('button', { name: /view vocabulary/i });
     expect(buttons).toHaveLength(2);
-    
+
     // Verify buttons are clickable
     await userEvent.click(buttons[0]);
     expect(buttons[0]).toBeInTheDocument();
@@ -115,7 +115,7 @@ describe('TopicList Component', () => {
         <TopicList topics={mockTopics} />
       </BrowserRouter>
     );
-    
+
     const gridContainer = container.querySelector('div[style*="grid"]');
     expect(gridContainer).toBeInTheDocument();
   });
