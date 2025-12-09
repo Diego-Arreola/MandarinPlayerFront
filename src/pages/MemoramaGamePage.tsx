@@ -1,7 +1,7 @@
 // In c:\Users\estec\Documents\GitHub\CleanTeam Diego\MandarinPlayerFront\src\pages\MemoramaGamePage.tsx
 
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useGameExit } from "../hooks/useGameExit";
 import GameExitModal from "../components/GameExitModal";
 
@@ -20,7 +20,6 @@ import "../styles/pages/MemoramaGamePage.css";
 
 const MemoramaGamePage = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const { topicVocabulary, rounds } = location.state as { topicVocabulary: Vocabulary[], rounds?: number } || { topicVocabulary: [] };
   const { showExitConfirm, handleExit, confirmExit, cancelExit } = useGameExit();
 

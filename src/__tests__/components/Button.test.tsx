@@ -51,7 +51,7 @@ describe('Button Component', () => {
   it('forwards ref correctly', () => {
     let buttonRef: HTMLButtonElement | null = null;
      
-    const { container } = render(
+    render(
       <Button ref={(el) => { buttonRef = el; }}>
         Ref Button
       </Button>

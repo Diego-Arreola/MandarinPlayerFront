@@ -8,7 +8,6 @@ import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import JoinGamePage from './pages/JoinGamePage';
 import WelcomePage from './pages/WelcomePage';
-import ProtectedRoute from './components/ProtectedRoute';
 import NotFoundPage from './pages/NotFoundPage';
 
 // Import your layout components
