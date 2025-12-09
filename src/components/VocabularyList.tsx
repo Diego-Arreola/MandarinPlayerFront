@@ -20,9 +20,9 @@ const VocabularyList: React.FC<VocabularyListProps> = ({ vocabulary }) => {
             <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px', color: 'black' }}>
                 <thead>
                     <tr style={{ backgroundColor: '#f0f0f0', textAlign: 'left' }}>
-                        <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Chinese</th>
-                        <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Pinyin</th>
-                        <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Spanish</th>
+                        <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Character/Word</th>
+                        <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Pinyin/Pronunciation</th>
+                        <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Meaning</th>
                     </tr>
                 </thead>
                 <tbody>

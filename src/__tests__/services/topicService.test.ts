@@ -60,7 +60,7 @@ describe('topicService', () => {
 
       expect(topics).toEqual(mockTopics);
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/topics'),
+        expect.stringContaining('/themes'),
         expect.objectContaining({
           method: 'GET',
           headers: expect.objectContaining({ 'Authorization': 'Bearer test-token' }),
@@ -103,7 +103,7 @@ describe('topicService', () => {
 
       expect(topic).toEqual(mockTopic);
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/topics/1'),
+        expect.stringContaining('/themes/1'),
         expect.any(Object)
       );
     });
@@ -155,7 +155,7 @@ describe('topicService', () => {
 
       expect(topic).toEqual(mockTopic);
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/topics'),
+        expect.stringContaining('/themes'),
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify({ name: 'New Topic', description: 'New Description' }),
@@ -203,7 +203,7 @@ describe('topicService', () => {
 
       expect(vocab).toEqual(mockVocab);
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/topics/1/vocabulary'),
+        expect.stringContaining('/themes/1/vocabulary'),
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify({

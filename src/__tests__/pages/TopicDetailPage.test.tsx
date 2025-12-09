@@ -27,11 +27,11 @@ vi.mock('../../services/topicService', () => ({
 
 const mockTopic = {
   id: '1',
-  title: 'Greetings',
+  name: 'Greetings',
   description: 'Basic greetings',
   vocabulary: [
-    { id: '1', chinese: '你好', pinyin: 'Nǐ hǎo', spanish: 'Hello' },
-    { id: '2', chinese: '谢谢', pinyin: 'Xièxiè', spanish: 'Thank you' },
+    { id: '1', character: '你好', pinyin: 'Nǐ hǎo', translation: 'Hello' },
+    { id: '2', character: '谢谢', pinyin: 'Xièxiè', translation: 'Thank you' },
   ]
 };
 
@@ -73,8 +73,18 @@ describe('TopicDetailPage', () => {
       </BrowserRouter>
     );
 
+    // Wait for loading to finish first
     await waitFor(() => {
-      expect(screen.getByText(/basic greetings/i)).toBeInTheDocument();
+      expect(screen.queryByText(/loading topic/i)).not.toBeInTheDocument();
+    });
+
+    // Now check for title
+    await waitFor(() => {
+      const titles = screen.getAllByText(/Greetings/i);
+      expect(titles.length).toBeGreaterThan(0);
+    }).catch(e => {
+        screen.debug(); // Log DOM on failure
+        throw e;
     });
   });
 
@@ -190,6 +200,10 @@ describe('TopicDetailPage', () => {
         <TopicDetailPage />
       </BrowserRouter>
     );
+
+    await waitFor(() => {
+      expect(screen.queryByText(/loading topic/i)).not.toBeInTheDocument();
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Nǐ hǎo')).toBeInTheDocument();

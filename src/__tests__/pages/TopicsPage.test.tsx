@@ -30,13 +30,13 @@ describe('TopicsPage', () => {
   const mockTopics: Topic[] = [
     {
       id: '1',
-      title: 'Greetings',
+      name: 'Greetings',
       description: 'Basic greetings',
       vocabulary: [],
     },
     {
       id: '2',
-      title: 'Numbers',
+      name: 'Numbers',
       description: 'Learn numbers',
       vocabulary: [],
     },

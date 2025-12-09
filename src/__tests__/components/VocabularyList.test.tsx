@@ -4,9 +4,9 @@ import VocabularyList from '../../components/VocabularyList';
 import type { Vocabulary } from '../../services/topicService';
 
 const mockVocabulary: Vocabulary[] = [
-  { id: '1', chinese: '你好', pinyin: 'Nǐ hǎo', spanish: 'Hola' },
-  { id: '2', chinese: '谢谢', pinyin: 'Xièxiè', spanish: 'Gracias' },
-  { id: '3', chinese: '再见', pinyin: 'Zàijiàn', spanish: 'Adiós' },
+  { id: '1', character: '你好', pinyin: 'Nǐ hǎo', translation: 'Hola' },
+  { id: '2', character: '谢谢', pinyin: 'Xièxiè', translation: 'Gracias' },
+  { id: '3', character: '再见', pinyin: 'Zàijiàn', translation: 'Adiós' },
 ];
 
 describe('VocabularyList Component', () => {
@@ -27,9 +27,9 @@ describe('VocabularyList Component', () => {
   it('displays table headers', () => {
     render(<VocabularyList vocabulary={mockVocabulary} />);
     
-    expect(screen.getByText('Chinese')).toBeInTheDocument();
-    expect(screen.getByText('Pinyin')).toBeInTheDocument();
-    expect(screen.getByText('Spanish')).toBeInTheDocument();
+    expect(screen.getByText('Character/Word')).toBeInTheDocument();
+    expect(screen.getByText('Pinyin/Pronunciation')).toBeInTheDocument();
+    expect(screen.getByText('Meaning')).toBeInTheDocument();
   });
 
   it('displays all vocabulary items', () => {
@@ -53,7 +53,7 @@ describe('VocabularyList Component', () => {
     expect(screen.getByText('Zàijiàn')).toBeInTheDocument();
   });
 
-  it('displays spanish translation for each vocabulary item', () => {
+  it('displays translation for each vocabulary item', () => {
     render(<VocabularyList vocabulary={mockVocabulary} />);
     
     // Verify the table renders with pinyin as the reliable indicator
