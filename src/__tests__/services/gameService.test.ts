@@ -64,7 +64,7 @@ describe('gameService', () => {
 
       expect(session).toEqual(mockSession);
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/games/create'),
+        expect.stringContaining('/api/matches/create'),
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify({ config: gameConfig, hostName: 'Host' }),
@@ -115,7 +115,7 @@ describe('gameService', () => {
 
       expect(session).toEqual(mockSession);
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/games/join'),
+        expect.stringContaining('/api/matches/join'),
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify({ code: 'ABC123', playerName: 'Player2' }),
@@ -157,7 +157,7 @@ describe('gameService', () => {
 
       expect(session).toEqual(mockSession);
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/games/ABC123'),
+        expect.stringContaining('/api/matches/ABC123'),
         expect.objectContaining({ method: 'GET' })
       );
     });
