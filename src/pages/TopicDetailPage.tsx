@@ -63,7 +63,7 @@ const TopicDetailPage = () => {
                 </Button>
 
                 <div style={{ borderBottom: '1px solid #eee', paddingBottom: '20px' }}>
-                    <h2 style={{ color: 'var(--secondary-color)', margin: '0 0 10px 0' }}>{topic.title}</h2>
+                    <h2 style={{ color: 'var(--secondary-color)', margin: '0 0 10px 0' }}>{topic.name}</h2>
                     <p style={{ color: '#666', margin: 0 }}>{topic.description}</p>
                 </div>
             </div>
@@ -84,6 +84,7 @@ const TopicDetailPage = () => {
                 </div>
             )}
 
+            <h1 className="text-3xl font-bold text-gray-900">{topic?.name}</h1>
             <VocabularyList vocabulary={topic.vocabulary} />
         </div>
     );
