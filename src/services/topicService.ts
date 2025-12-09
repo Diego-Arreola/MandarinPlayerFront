@@ -79,25 +79,51 @@ export const topicService = {
   },
 
   createTopic: async (title: string, description: string): Promise<Topic> => {
-    const response = await fetch(API_ENDPOINTS.TOPICS, {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({ name: title, description })
-    });
-    if (!response.ok) {
-      const errorBody = await response.text();
-      throw new Error(errorBody || 'Error al crear tema');
+    try {
+      const response = await fetch(API_ENDPOINTS.TOPICS, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ name: title, description })
+      });
+      if (!response.ok) {
+        const errorBody = await response.text();
+        throw new Error(errorBody || 'Error al crear tema');
+      }
+      return await response.json();
+    } catch (error) {
+      console.warn("API failed, using mock data", error);
+      const newTopic: Topic = {
+        id: Date.now().toString(),
+        name: title,
+        description,
+        vocabulary: []
+      };
+      mockTopics.push(newTopic);
+      return newTopic;
     }
-    return await response.json();
   },
 
   addVocabulary: async (topicId: string, vocab: Omit<Vocabulary, 'id'>): Promise<Vocabulary> => {
-    const response = await fetch(`${API_ENDPOINTS.TOPICS}/${topicId}/vocabulary`, {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify(vocab)
-    });
-    if (!response.ok) throw new Error('Error al agregar vocabulario');
-    return await response.json();
+    try {
+      const response = await fetch(`${API_ENDPOINTS.TOPICS}/${topicId}/vocabulary`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify(vocab)
+      });
+      if (!response.ok) throw new Error('Error al agregar vocabulario');
+      return await response.json();
+    } catch (error) {
+      console.warn("API failed, using mock data", error);
+      const topic = mockTopics.find(t => t.id === topicId);
+      if (topic) {
+        const newVocab = {
+          id: Date.now().toString(),
+          ...vocab
+        };
+        topic.vocabulary.push(newVocab);
+        return newVocab;
+      }
+      throw error;
+    }
   },
 };
