@@ -42,9 +42,6 @@ const JoinGamePage = () => {
 
   return (
     <div style={{ maxWidth: '400px', margin: 'auto', padding: '20px', textAlign: 'center' }}>
-      <Button variant="secondary" onClick={() => navigate('/welcome')} style={{ marginBottom: '20px', alignSelf: 'flex-start' }}>
-        &larr; Back
-      </Button>
       <h2 style={{ color: 'var(--secondary-color)', marginBottom: '30px' }}>Join a Game</h2>
       <form onSubmit={handleJoin}>
         <Input
@@ -57,6 +54,9 @@ const JoinGamePage = () => {
         />
         <Button type="submit" disabled={isJoining} style={{ width: '100%' }}>
           {isJoining ? 'Joining...' : 'Join Game'}
+        </Button>
+        <Button variant="secondary" onClick={() => navigate('/welcome')} style={{ marginTop: '20px', alignSelf: 'flex-start' }}>
+          &larr; Back
         </Button>
       </form>
     </div>

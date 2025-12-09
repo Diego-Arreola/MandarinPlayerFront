@@ -69,7 +69,7 @@ const TopicDetailPage = () => {
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <h3 style={{ margin: 0 }}>Vocabulary List ({topic.vocabulary.length})</h3>
+                <h3 style={{ margin: 0 }}>Vocabulary List ({topic.vocabulary?.length || 0})</h3>
                 {!isAdding && (
                     <Button onClick={() => setIsAdding(true)}>
                         + Add Word
@@ -85,7 +85,7 @@ const TopicDetailPage = () => {
             )}
 
             <h1 className="text-3xl font-bold text-gray-900">{topic?.name}</h1>
-            <VocabularyList vocabulary={topic.vocabulary} />
+            <VocabularyList vocabulary={topic.vocabulary || []} />
         </div>
     );
 };

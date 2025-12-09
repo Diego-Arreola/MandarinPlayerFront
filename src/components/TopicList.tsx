@@ -35,7 +35,7 @@ const TopicList: React.FC<TopicListProps> = ({ topics }) => {
                         <h3 className="text-xl font-bold mb-2 text-primary">{topic.name}</h3>
                         <p style={{ color: '#555', fontSize: '0.9rem' }}>{topic.description}</p>
                         <p style={{ fontSize: '0.8rem', color: '#888' }}>
-                            {topic.vocabulary.length} words
+                            {topic.vocabulary?.length ?? 0} words
                         </p>
                     </div>
                     <Button
