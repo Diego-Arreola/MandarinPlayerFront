@@ -22,7 +22,7 @@ const getHeaders = () => {
   };
 };
 
-const mockTopics: Topic[] = [
+export const mockTopics: Topic[] = [
   {
     id: '1',
     name: 'Greetings',
@@ -57,7 +57,8 @@ export const topicService = {
         headers: getHeaders()
       });
       if (!response.ok) return mockTopics;
-      return await response.json();
+      const realTopics = await response.json();
+      return [...realTopics, ...mockTopics];
     } catch (error) {
       console.warn("API failed, using mock data", error);
       return mockTopics;
@@ -66,12 +67,27 @@ export const topicService = {
 
   getTopicById: async (id: string): Promise<Topic | undefined> => {
     try {
-      const response = await fetch(`${API_ENDPOINTS.TOPICS}/${id}`, {
+      const responseTopic = await fetch(`${API_ENDPOINTS.TOPICS}/${id}`, {
         method: 'GET',
         headers: getHeaders()
       });
-      if (!response.ok) return mockTopics.find(t => t.id === id);
-      return await response.json();
+      if (!responseTopic.ok) return mockTopics.find(t => t.id === id);
+      const topic = await responseTopic.json();
+      if (!topic || !topic.id) {
+        return mockTopics.find(t => t.id === id);
+      }
+
+      const responseWords = await fetch(`${API_ENDPOINTS.TOPICS}/${id}/words`, {
+        method: 'GET',
+        headers: getHeaders()
+      });
+
+      let vocabulary: Vocabulary[] = [];
+      if (responseWords.ok) {
+        vocabulary = await responseWords.json();
+      }
+
+      return { ...topic, vocabulary };
     } catch (error) {
       console.warn("API failed, using mock data", error);
       return mockTopics.find(t => t.id === id);
@@ -92,12 +108,18 @@ export const topicService = {
   },
 
   addVocabulary: async (topicId: string, vocab: Omit<Vocabulary, 'id'>): Promise<Vocabulary> => {
-    const response = await fetch(`${API_ENDPOINTS.TOPICS}/${topicId}/vocabulary`, {
+    const response = await fetch(API_ENDPOINTS.WORDS, {
       method: 'POST',
       headers: getHeaders(),
-      body: JSON.stringify(vocab)
+      body: JSON.stringify({
+        ...vocab,
+        themeId: Number(topicId)
+      })
     });
-    if (!response.ok) throw new Error('Error al agregar vocabulario');
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || 'Error al agregar vocabulario');
+    }
     return await response.json();
   },
 };
