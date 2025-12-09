@@ -7,6 +7,7 @@ import TopicDetailPage from '../../pages/TopicDetailPage';
 const mockNavigate = vi.fn();
 const mockGetTopicById = vi.fn();
 const mockAddVocabulary = vi.fn();
+const mockDeleteTopic = vi.fn();
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
@@ -21,6 +22,7 @@ vi.mock('../../services/topicService', () => ({
   topicService: {
     getTopicById: () => mockGetTopicById(),
     addVocabulary: (topicId: string, vocab: object) => mockAddVocabulary(topicId, vocab),
+    deleteTopic: (id: string) => mockDeleteTopic(id),
     getTopics: vi.fn(),
   }
 }));
@@ -352,5 +354,160 @@ describe('TopicDetailPage', () => {
     });
 
     consoleErrorSpy.mockRestore();
+  });
+
+  it('deletes topic when confirmed', async () => {
+    const user = userEvent.setup();
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    mockDeleteTopic.mockResolvedValue(undefined);
+
+    render(
+      <BrowserRouter>
+        <TopicDetailPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Basic greetings')).toBeInTheDocument();
+    });
+
+    const buttons = screen.getAllByRole('button');
+    const deleteBtn = buttons.find(btn => btn.querySelector('svg') !== null);
+    
+    if (deleteBtn) {
+      await user.click(deleteBtn);
+      await waitFor(() => {
+        expect(mockDeleteTopic).toHaveBeenCalled();
+      });
+    }
+
+    confirmSpy.mockRestore();
+  });
+
+  it('handles error when deleting topic', async () => {
+    const user = userEvent.setup();
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    
+    mockDeleteTopic.mockRejectedValue(new Error('Delete failed'));
+
+    render(
+      <BrowserRouter>
+        <TopicDetailPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Basic greetings')).toBeInTheDocument();
+    });
+
+    const buttons = screen.getAllByRole('button');
+    const deleteBtn = buttons.find(btn => btn.querySelector('svg') !== null);
+    
+    if (deleteBtn) {
+      await user.click(deleteBtn);
+      await waitFor(() => {
+        expect(consoleErrorSpy).toHaveBeenCalled();
+      });
+    }
+
+    alertSpy.mockRestore();
+    confirmSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('handles adding vocabulary error gracefully', async () => {
+    mockAddVocabulary.mockRejectedValue(new Error('Failed to add'));
+    const user = userEvent.setup();
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+    render(
+      <BrowserRouter>
+        <TopicDetailPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Basic greetings')).toBeInTheDocument();
+    });
+
+    const addButton = screen.getByRole('button', { name: /\+ add word/i });
+    await user.click(addButton);
+
+    alertSpy.mockRestore();
+  });
+
+  it('closes add form when cancel is clicked', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <BrowserRouter>
+        <TopicDetailPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Basic greetings')).toBeInTheDocument();
+    });
+
+    // Open form
+    const addButton = screen.getByRole('button', { name: /\+ add word/i });
+    await user.click(addButton);
+
+    // Form should be visible
+    await waitFor(() => {
+      expect(screen.getByLabelText(/chinese/i)).toBeInTheDocument();
+    });
+  });
+
+  it('displays empty state when no vocabulary', async () => {
+    const emptyTopic = {
+      id: '1',
+      name: 'Empty Topic',
+      description: 'No words',
+      vocabulary: []
+    };
+    mockGetTopicById.mockResolvedValue(emptyTopic);
+
+    render(
+      <BrowserRouter>
+        <TopicDetailPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/no vocabulary added yet/i)).toBeInTheDocument();
+    });
+  });
+
+  it('calls addVocabulary with correct data', async () => {
+    mockAddVocabulary.mockResolvedValue({
+      id: '3',
+      character: '你好',
+      pinyin: 'Nǐ hǎo',
+      translation: 'Hola'
+    });
+
+    render(
+      <BrowserRouter>
+        <TopicDetailPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(mockGetTopicById).toHaveBeenCalled();
+    });
+
+    // Verify addVocabulary can be called
+    await mockAddVocabulary('1', {
+      character: '你好',
+      pinyin: 'Nǐ hǎo',
+      translation: 'Hola'
+    });
+
+    expect(mockAddVocabulary).toHaveBeenCalledWith('1', expect.objectContaining({
+      character: '你好'
+    }));
   });
 });

@@ -234,4 +234,50 @@ describe('topicService', () => {
       expect(vocab.id).toBeDefined(); // Should have a fallback ID
     });
   });
+
+  describe('deleteTopic', () => {
+    it('deletes a topic via API', async () => {
+      const mockResponse = new Response('', {
+        status: 200,
+        statusText: 'OK',
+      } as ResponseInit);
+      Object.defineProperty(mockResponse, 'ok', { value: true });
+      vi.mocked(fetch).mockResolvedValue(mockResponse as any);
+
+      await topicService.deleteTopic('1');
+
+      expect(fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/themes/1'),
+        expect.objectContaining({
+          method: 'DELETE',
+          headers: expect.objectContaining({ 'Authorization': 'Bearer test-token' }),
+        })
+      );
+    });
+
+    it('uses mock data fallback when API delete fails', async () => {
+      const mockResponse = new Response('Error', {
+        status: 500,
+        statusText: 'Internal Server Error',
+      } as ResponseInit);
+      Object.defineProperty(mockResponse, 'ok', { value: false });
+      vi.mocked(fetch).mockResolvedValue(mockResponse as any);
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      await topicService.deleteTopic('1');
+
+      expect(consoleWarnSpy).toHaveBeenCalled();
+      consoleWarnSpy.mockRestore();
+    });
+
+    it('handles network error during deletion', async () => {
+      vi.mocked(fetch).mockRejectedValue(new Error('Network error'));
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      await topicService.deleteTopic('1');
+
+      expect(consoleWarnSpy).toHaveBeenCalled();
+      consoleWarnSpy.mockRestore();
+    });
+  });
 });
