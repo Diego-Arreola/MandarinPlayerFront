@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
-import SignUpPage from '../SignUpPage';
+import SignUpPage from '../../pages/SignUpPage';
 
 // Mock dependencies
 const mockNavigate = vi.fn();

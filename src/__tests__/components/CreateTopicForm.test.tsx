@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import CreateTopicForm from '../CreateTopicForm';
+import CreateTopicForm from '../../components/CreateTopicForm';
 
 describe('CreateTopicForm Component', () => {
   it('renders form with title and description inputs', () => {

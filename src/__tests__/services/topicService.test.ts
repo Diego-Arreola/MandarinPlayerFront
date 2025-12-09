@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { topicService } from '../topicService';
-import type { Topic, Vocabulary } from '../topicService';
+import { topicService } from '../../services/topicService';
+import type { Topic, Vocabulary } from '../../services/topicService';
 
 // Mock fetch globally
 vi.stubGlobal('fetch', vi.fn());

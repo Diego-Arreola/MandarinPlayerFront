@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import GameExitModal from '../GameExitModal';
+import GameExitModal from '../../components/GameExitModal';
 
 describe('GameExitModal Component', () => {
   it('does not render when isOpen is false', () => {

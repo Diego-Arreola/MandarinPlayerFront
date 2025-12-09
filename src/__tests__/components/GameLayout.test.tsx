@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import GameLayout from '../GameLayout';
+import GameLayout from '../../components/GameLayout';
 
 // Mock useParams
 vi.mock('react-router-dom', async () => {

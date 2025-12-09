@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import VocabularyList from '../VocabularyList';
+import VocabularyList from '../../components/VocabularyList';
 import type { Vocabulary } from '../../services/topicService';
 
 const mockVocabulary: Vocabulary[] = [

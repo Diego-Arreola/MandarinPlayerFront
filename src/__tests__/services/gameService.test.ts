@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { gameService } from '../gameService';
-import type { GameSession, GameConfig } from '../gameService';
+import { gameService } from '../../services/gameService';
+import type { GameSession, GameConfig } from '../../services/gameService';
 
 // Mock fetch globally
 vi.stubGlobal('fetch', vi.fn());

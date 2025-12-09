@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
-import { useGameExit } from '../useGameExit';
+import { useGameExit } from '../../hooks/useGameExit';
 
 const mockNavigate = vi.fn();
 

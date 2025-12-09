@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { registerUser, loginUser, logoutUser } from '../authService';
+import { registerUser, loginUser, logoutUser } from '../../services/authService';
 
 // Mock fetch globally
 vi.stubGlobal('fetch', vi.fn());
