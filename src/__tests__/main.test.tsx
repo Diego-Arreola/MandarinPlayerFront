@@ -8,7 +8,7 @@ vi.mock('react-dom/client', () => ({
 }));
 
 // Mock the App component
-vi.mock('./App', () => ({
+vi.mock('../App', () => ({
   default: () => <div data-testid="app">App Component</div>,
 }));
 
@@ -20,7 +20,7 @@ vi.mock('react-router-dom', () => ({
 }));
 
 // Mock AuthContext
-vi.mock('./context/AuthContext', () => ({
+vi.mock('../context/AuthContext', () => ({
   AuthProvider: ({ children }: { children: React.ReactNode }) => children,
   useAuth: vi.fn(() => ({
     user: null,
@@ -31,7 +31,7 @@ vi.mock('./context/AuthContext', () => ({
 }));
 
 // Mock styles
-vi.mock('./styles/index.css', () => ({}));
+vi.mock('../styles/index.css', () => ({}));
 
 describe('main.tsx', () => {
   beforeEach(() => {

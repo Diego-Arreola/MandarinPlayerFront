@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/api/topics';
+import { API_ENDPOINTS } from '../config/api';
 
 export interface Vocabulary {
   id: string;
@@ -52,7 +52,7 @@ const mockTopics: Topic[] = [
 export const topicService = {
   getTopics: async (): Promise<Topic[]> => {
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(API_ENDPOINTS.TOPICS, {
         method: 'GET',
         headers: getHeaders()
       });
@@ -66,7 +66,7 @@ export const topicService = {
 
   getTopicById: async (id: string): Promise<Topic | undefined> => {
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await fetch(`${API_ENDPOINTS.TOPICS}/${id}`, {
         method: 'GET',
         headers: getHeaders()
       });
@@ -79,7 +79,7 @@ export const topicService = {
   },
 
   createTopic: async (title: string, description: string): Promise<Topic> => {
-    const response = await fetch(API_URL, {
+    const response = await fetch(API_ENDPOINTS.TOPICS, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ title, description })
@@ -89,7 +89,7 @@ export const topicService = {
   },
 
   addVocabulary: async (topicId: string, vocab: Omit<Vocabulary, 'id'>): Promise<Vocabulary> => {
-    const response = await fetch(`${API_URL}/${topicId}/vocabulary`, {
+    const response = await fetch(`${API_ENDPOINTS.TOPICS}/${topicId}/vocabulary`, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify(vocab)

@@ -1,5 +1,4 @@
-
-const API_URL = 'http://localhost:8080/api/auth';
+import { API_ENDPOINTS } from '../config/api';
 
 export interface UserRegistrationData {
   name: string;
@@ -19,7 +18,7 @@ export interface User {
 }
 
 export const registerUser = async (userData: UserRegistrationData) => {
-  const response = await fetch(`${API_URL}/register`, {
+  const response = await fetch(`${API_ENDPOINTS.AUTH}/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -40,7 +39,7 @@ export const registerUser = async (userData: UserRegistrationData) => {
 };
 
 export const loginUser = async (userData: UserLoginData): Promise<User> => {
-  const response = await fetch(`${API_URL}/login`, {
+  const response = await fetch(`${API_ENDPOINTS.AUTH}/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

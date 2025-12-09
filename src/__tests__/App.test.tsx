@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import App from './App';
+import App from '../App';
 
 const mockUseAuth = vi.fn(() => ({
   user: { id: '1', name: 'Test User', email: 'test@example.com' },
@@ -10,7 +10,7 @@ const mockUseAuth = vi.fn(() => ({
   logout: vi.fn(),
 }));
 
-vi.mock('./context/AuthContext', () => ({
+vi.mock('../context/AuthContext', () => ({
   useAuth: () => mockUseAuth(),
   AuthProvider: ({ children }: { children: React.ReactNode }) => children,
 }));
