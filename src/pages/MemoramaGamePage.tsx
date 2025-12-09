@@ -1,5 +1,3 @@
-// In c:\Users\estec\Documents\GitHub\CleanTeam Diego\MandarinPlayerFront\src\pages\MemoramaGamePage.tsx
-
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useGameExit } from "../hooks/useGameExit";
@@ -24,51 +22,41 @@ const MemoramaGamePage = () => {
   const { showExitConfirm, handleExit, confirmExit, cancelExit } = useGameExit();
 
   const [cards, setCards] = useState<Card[]>(() => {
-    // --- Initial Game Setup ---
     let vocabulary = topicVocabulary;
 
-    // Default vocabulary (Greetings) if none provided
     if (!vocabulary || vocabulary.length === 0) {
       console.log("No vocabulary provided. Using default 'Greetings' topic.");
       vocabulary = [
-        { id: '1', chinese: '你好', pinyin: 'Nǐ hǎo', spanish: 'Hola' },
-        { id: '2', chinese: '谢谢', pinyin: 'Xièxiè', spanish: 'Gracias' },
-        { id: '3', chinese: '再见', pinyin: 'Zàijiàn', spanish: 'Adiós' }
+        { id: '1', character: '你好', pinyin: 'Nǐ hǎo', translation: 'Hola' },
+        { id: '2', character: '谢谢', pinyin: 'Xièxiè', translation: 'Gracias' },
+        { id: '3', character: '再见', pinyin: 'Zàijiàn', translation: 'Adiós' }
       ];
     }
 
-    // Limit vocabulary based on rounds (if provided)
     if (rounds && rounds > 0 && rounds < vocabulary.length) {
-      // Shuffle first to get random words
       vocabulary = [...vocabulary].sort(() => Math.random() - 0.5).slice(0, rounds);
     }
 
-    // Create card pairs (Hanzi and Meaning)
     const gameCards: Card[] = vocabulary.flatMap((item): Card[] => ([
-      { id: `${item.id}-hanzi`, type: 'hanzi', content: item.chinese, pairId: item.id },
-      { id: `${item.id}-meaning`, type: 'meaning', content: item.spanish, pairId: item.id }
+      { id: `${item.id}-hanzi`, type: 'hanzi', content: item.character, pairId: item.id },
+      { id: `${item.id}-meaning`, type: 'meaning', content: item.translation, pairId: item.id }
     ]));
 
-    // Shuffle the cards and return as initial state
     return gameCards.sort(() => Math.random() - 0.5);
   });
 
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
-  // Track matches with player info: { pairId: 1, player: 1 }
   const [matches, setMatches] = useState<{ pairId: string; player: 1 | 2 }[]>([]);
   const [currentPlayer, setCurrentPlayer] = useState<1 | 2>(1);
   const [isChecking, setIsChecking] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
-  // Derived state
   const scores = {
     player1: matches.filter(m => m.player === 1).length,
     player2: matches.filter(m => m.player === 2).length
   };
   const matchedPairIds = matches.map(m => m.pairId);
-
-
 
   useEffect(() => {
     if (flippedCards.length === 2) {
@@ -78,19 +66,14 @@ const MemoramaGamePage = () => {
       const secondCard = cards[secondIndex];
 
       if (firstCard.pairId === secondCard.pairId) {
-        // It's a match
         setMatches(prev => [...prev, { pairId: firstCard.pairId, player: currentPlayer }]);
         setFlippedCards([]);
         setIsChecking(false);
 
-        // Check for game over
-        // We use matches.length + 1 because state update hasn't reflected yet in this render cycle for 'matches'
-        // but we know we just added one.
         if (matches.length + 1 === cards.length / 2) {
           setGameOver(true);
         }
       } else {
-        // Not a match, flip back after a delay
         setTimeout(() => {
           setFlippedCards([]);
           setCurrentPlayer(prev => (prev === 1 ? 2 : 1));
@@ -99,44 +82,8 @@ const MemoramaGamePage = () => {
       }
     }
   }, [flippedCards, cards, currentPlayer, matches.length]);
-
-  const handleCardClick = (index: number) => {
-    if (isChecking || flippedCards.length === 2 || flippedCards.includes(index)) {
-      return;
-    }
-
-    const card = cards[index];
-    if (matchedPairIds.includes(card.pairId)) {
-      return;
-    }
-
-    setFlippedCards(prev => [...prev, index]);
-  };
-
-  const getWinner = () => {
-    if (scores.player1 > scores.player2) return "Player 1 Wins!";
-    if (scores.player2 > scores.player1) return "Player 2 Wins!";
-    return "It's a Tie!";
-  };
-
-  const handlePlayAgain = () => {
-    setFlippedCards([]);
-    setMatches([]);
-    setCurrentPlayer(1);
-    setGameOver(false);
-    setShowResults(false);
-    setCards(prevCards => [...prevCards].sort(() => Math.random() - 0.5));
-  };
-
-  const handlePrint = () => {
-    window.print();
-  };
-
-
-
-  // Helper to get vocabulary details for results
+  //...
   const getVocabularyDetails = (pairId: string) => {
-    // We can find the card content from the cards array
     const hanziCard = cards.find(c => c.pairId === pairId && c.type === 'hanzi');
     const meaningCard = cards.find(c => c.pairId === pairId && c.type === 'meaning');
     return {

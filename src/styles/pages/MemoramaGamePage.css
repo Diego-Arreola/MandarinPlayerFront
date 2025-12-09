@@ -128,7 +128,7 @@
 /* Front of the card (hidden state) - Now White */
 .card-front {
     background-color: #ffffff;
-    color: #333;
+    color: #000000;
     font-size: clamp(1.5rem, 4vw, 3rem);
     border: 2px solid var(--primary);
 }
@@ -136,7 +136,7 @@
 /* Back of the card (revealed state) - Now White */
 .card-back {
     background-color: #ffffff;
-    color: #333;
+    color: #000000;
     transform: rotateY(180deg);
     word-break: break-word;
     border: 2px solid var(--secondary);
