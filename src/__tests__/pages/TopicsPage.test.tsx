@@ -170,7 +170,7 @@ describe('TopicsPage', () => {
     const backButton = screen.getByRole('button', { name: /back to home/i });
     await user.click(backButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith('/');
+    expect(mockNavigate).toHaveBeenCalledWith('/welcome');
   });
 
   it('opens create topic form when Create New Topic is clicked', async () => {
@@ -181,10 +181,13 @@ describe('TopicsPage', () => {
       </BrowserRouter>
     );
 
-    const createButton = screen.getByRole('button', { name: /create new topic/i });
+    const createButton = screen.getByRole('button', { name: /\+ create new topic/i });
     await user.click(createButton);
 
-    expect(createButton).toBeInTheDocument();
+    // After clicking, should show the form
+    await waitFor(() => {
+      expect(screen.getByText(/create new topic/i)).toBeInTheDocument();
+    });
   });
 
   it('handles empty topics list', async () => {

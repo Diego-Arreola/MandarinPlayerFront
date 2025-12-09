@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import SignUpPage from '../../pages/SignUpPage';
@@ -18,6 +18,8 @@ vi.mock('react-router-dom', async () => {
 vi.mock('../../services/authService', () => ({
   registerUser: vi.fn(),
 }));
+
+import { registerUser } from '../../services/authService';
 
 describe('SignUpPage', () => {
   beforeEach(() => {
@@ -139,6 +141,8 @@ describe('SignUpPage', () => {
 
   it('submits form with valid credentials', async () => {
     const user = userEvent.setup();
+    vi.mocked(registerUser).mockResolvedValue({ id: '1', email: 'new@example.com' } as any);
+    
     render(
       <BrowserRouter>
         <SignUpPage />
@@ -155,7 +159,10 @@ describe('SignUpPage', () => {
     await user.type(passwordInput, 'password123');
     await user.click(submitButton);
 
-    expect(submitButton).toBeInTheDocument();
+    // After successful signup, should show success message
+    await waitFor(() => {
+      expect(screen.getByText(/sign up successful/i)).toBeInTheDocument();
+    });
   });
 
   it('validates all fields are filled', async () => {
