@@ -73,8 +73,8 @@ jobs:
           file: ./dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/mandarinplayer:latest
-            ${{ secrets.DOCKER_USERNAME }}/mandarinplayer:${{ github.sha }}
+            ${{ secrets.DOCKER_USERNAME }}/mandarinplayer-front:latest
+            ${{ secrets.DOCKER_USERNAME }}/mandarinplayer-front:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -92,8 +92,8 @@ jobs:
           file: ./dockerfile
           push: true
           tags: |
-            ghcr.io/${{ steps.lowercase.outputs.owner }}/mandarinplayerfront:latest
-            ghcr.io/${{ steps.lowercase.outputs.owner }}/mandarinplayerfront:${{ github.sha }}
+            ghcr.io/${{ steps.lowercase.outputs.owner }}/mandarinplayer-front:latest
+            ghcr.io/${{ steps.lowercase.outputs.owner }}/mandarinplayer-front:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
