@@ -171,9 +171,9 @@ const KahootGamePage = () => {
                         <tbody>
                             {gameState.results.map((result, index) => (
                                 <tr key={index} style={{ borderBottom: '1px solid #eee' }}>
-                                    <td style={{ padding: '1rem' }}>{result.target.spanish}</td>
-                                    <td style={{ padding: '1rem' }}>{result.target.chinese} ({result.target.pinyin})</td>
-                                    <td style={{ padding: '1rem' }}>{result.selected?.chinese}</td>
+                                    <td style={{ padding: '1rem' }}>{result.target.translation}</td>
+                                    <td style={{ padding: '1rem' }}>{result.target.character} ({result.target.pinyin})</td>
+                                    <td style={{ padding: '1rem' }}>{result.selected?.character}</td>
                                     <td style={{ padding: '1rem', fontWeight: 'bold', color: result.isCorrect ? 'green' : 'red' }}>
                                         {result.isCorrect ? 'Correct' : 'Incorrect'}
                                     </td>
@@ -270,7 +270,7 @@ const KahootGamePage = () => {
                     minHeight: '200px'
                 }}>
                     <h2 style={{ fontSize: '1.5rem', color: '#666', marginBottom: '1rem' }}>Translate this word:</h2>
-                    <h1 style={{ fontSize: '3rem', margin: 0 }}>{currentQuestion.target.spanish}</h1>
+                    <h1 style={{ fontSize: '3rem', margin: 0 }}>{currentQuestion.target.translation}</h1>
                 </div>
 
                 <div style={{
@@ -301,7 +301,7 @@ const KahootGamePage = () => {
                                 ...getOptionStyle(option)
                             }}
                         >
-                            {option.chinese}
+                            {option.character}
                         </div>
                     ))}
                 </div>

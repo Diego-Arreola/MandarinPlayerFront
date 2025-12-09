@@ -17,21 +17,21 @@ vi.mock('react-router-dom', async () => {
 const mockTopics: Topic[] = [
   {
     id: '1',
-    title: 'Basic Greetings',
+    name: 'Basic Greetings',
     description: 'Learn how to greet in Mandarin',
     vocabulary: [
-      { id: '1', chinese: '你好', pinyin: 'Nǐ hǎo', spanish: 'Hola' },
-      { id: '2', chinese: '再见', pinyin: 'Zàijiàn', spanish: 'Adiós' },
+      { id: '1', character: '你好', pinyin: 'Nǐ hǎo', translation: 'Hola' },
+      { id: '2', character: '再见', pinyin: 'Zàijiàn', translation: 'Adiós' },
     ],
   },
   {
     id: '2',
-    title: 'Numbers',
+    name: 'Numbers',
     description: 'Learn Mandarin numbers',
     vocabulary: [
-      { id: '3', chinese: '一', pinyin: 'Yī', spanish: 'Uno' },
-      { id: '4', chinese: '二', pinyin: 'Èr', spanish: 'Dos' },
-      { id: '5', chinese: '三', pinyin: 'Sān', spanish: 'Tres' },
+      { id: '3', character: '一', pinyin: 'Yī', translation: 'Uno' },
+      { id: '4', character: '二', pinyin: 'Èr', translation: 'Dos' },
+      { id: '5', character: '三', pinyin: 'Sān', translation: 'Tres' },
     ],
   },
 ];
