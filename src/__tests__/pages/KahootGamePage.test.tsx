@@ -26,11 +26,11 @@ vi.mock('../../hooks/useGameExit', () => ({
 }));
 
 const mockVocabulary = [
-  { id: '1', chinese: '你好', pinyin: 'Nǐ hǎo', spanish: 'Hello' },
-  { id: '2', chinese: '谢谢', pinyin: 'Xièxiè', spanish: 'Thank you' },
-  { id: '3', chinese: '再见', pinyin: 'Zàijiàn', spanish: 'Goodbye' },
-  { id: '4', chinese: '对不起', pinyin: 'Duìbùqǐ', spanish: 'Sorry' },
-  { id: '5', chinese: '是的', pinyin: 'Shì de', spanish: 'Yes' }
+  { id: '1', character: '你好', pinyin: 'Nǐ hǎo', translation: 'Hello' },
+  { id: '2', character: '谢谢', pinyin: 'Xièxiè', translation: 'Thank you' },
+  { id: '3', character: '再见', pinyin: 'Zàijiàn', translation: 'Goodbye' },
+  { id: '4', character: '对不起', pinyin: 'Duìbùqǐ', translation: 'Sorry' },
+  { id: '5', character: '是的', pinyin: 'Shì de', translation: 'Yes' }
 ];
 
 describe('KahootGamePage', () => {
@@ -63,9 +63,9 @@ describe('KahootGamePage', () => {
     );
 
     await waitFor(() => {
-      // Should display Chinese character of current question
-      const chineseText = mockVocabulary.map(v => v.chinese);
-      const displayed = chineseText.some(text => screen.queryByText(text));
+      // Should display translation of current question
+      const translations = mockVocabulary.map(v => v.translation);
+      const displayed = translations.some(text => screen.queryByText(text));
       expect(displayed).toBe(true);
     });
   });
@@ -78,9 +78,9 @@ describe('KahootGamePage', () => {
     );
 
     await waitFor(() => {
-      // Options are displayed as divs with Chinese text
+      // Options are displayed as divs with characters
       const options = screen.getAllByText(/你好|谢谢|再见|对不起|是的/);
-      expect(options.length).toBeGreaterThan(0);
+      expect(options.length).toBeGreaterThanOrEqual(1);
     });
   });
 
