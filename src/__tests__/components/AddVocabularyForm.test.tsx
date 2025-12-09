@@ -87,9 +87,9 @@ describe('AddVocabularyForm Component', () => {
     await userEvent.click(submitButton);
 
     expect(handleSubmit).toHaveBeenCalledWith({
-      chinese: '你好',
+      character: '你好',
       pinyin: 'Nǐ hǎo',
-      spanish: 'Hola',
+      translation: 'Hola',
     });
   });
 
