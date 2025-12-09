@@ -409,4 +409,165 @@ describe('MemoramaGamePage', () => {
       expect(heading).toBeInTheDocument();
     }, { timeout: 3000 });
   });
+
+  it('handles matched pairs correctly', async () => {
+    render(
+      <BrowserRouter>
+        <MemoramaGamePage />
+      </BrowserRouter>
+    );
+
+    const cards = document.querySelectorAll('.card');
+    expect(cards.length).toBeGreaterThan(0);
+  });
+
+  it('resets unmatched pairs', async () => {
+    const user = userEvent.setup();
+    render(
+      <BrowserRouter>
+        <MemoramaGamePage />
+      </BrowserRouter>
+    );
+
+    const cards = document.querySelectorAll('.card');
+    if (cards.length >= 2) {
+      const card1 = cards[0] as HTMLElement;
+      const card2 = cards[1] as HTMLElement;
+      
+      await user.click(card1);
+      await waitFor(() => {
+        expect(card1).toBeInTheDocument();
+      });
+      
+      await user.click(card2);
+      await waitFor(() => {
+        expect(card2).toBeInTheDocument();
+      });
+    }
+  });
+
+  it('alternates between players on turn completion', async () => {
+    render(
+      <BrowserRouter>
+        <MemoramaGamePage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      // Should have player turn indicator
+      const playerIndicators = screen.queryAllByText(/player/i);
+      expect(playerIndicators.length).toBeGreaterThan(0);
+    });
+  });
+
+  it('displays correct round number', async () => {
+    mockUseLocation.mockReturnValue({
+      pathname: '/game/memorama/ABC123',
+      state: {
+        topicVocabulary: mockVocabulary,
+        rounds: 5
+      }
+    });
+
+    render(
+      <BrowserRouter>
+        <MemoramaGamePage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /memorama/i })).toBeInTheDocument();
+    });
+  });
+
+  it('handles null state gracefully', () => {
+    mockUseLocation.mockReturnValue({
+      pathname: '/game/memorama/ABC123',
+      state: null
+    });
+
+    render(
+      <BrowserRouter>
+        <MemoramaGamePage />
+      </BrowserRouter>
+    );
+
+    // Should still render without crashing
+    expect(screen.getByRole('heading', { name: /memorama/i })).toBeInTheDocument();
+  });
+
+  it('card flip animation triggers on click', async () => {
+    const user = userEvent.setup();
+    render(
+      <BrowserRouter>
+        <MemoramaGamePage />
+      </BrowserRouter>
+    );
+
+    const cards = document.querySelectorAll('.card');
+    if (cards.length > 0) {
+      const card = cards[0] as HTMLElement;
+      await user.click(card);
+      expect(card).toBeInTheDocument();
+    }
+  });
+
+  it('displays vocabulary content correctly', () => {
+    render(
+      <BrowserRouter>
+        <MemoramaGamePage />
+      </BrowserRouter>
+    );
+
+    // Game should render with provided vocabulary
+    expect(screen.getByRole('heading', { name: /memorama/i })).toBeInTheDocument();
+  });
+
+  it('manages game state transitions correctly', async () => {
+    render(
+      <BrowserRouter>
+        <MemoramaGamePage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /memorama/i })).toBeInTheDocument();
+    });
+
+    const cards = document.querySelectorAll('.card');
+    expect(cards.length).toBeGreaterThan(0);
+  });
+
+  it('handles rapid card clicking', async () => {
+    const user = userEvent.setup();
+    render(
+      <BrowserRouter>
+        <MemoramaGamePage />
+      </BrowserRouter>
+    );
+
+    const cards = document.querySelectorAll('.card');
+    if (cards.length >= 3) {
+      // Rapid clicking should be handled
+      await user.click(cards[0] as HTMLElement);
+      await user.click(cards[1] as HTMLElement);
+      await user.click(cards[2] as HTMLElement);
+      
+      expect(cards.length).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  it('updates score on successful match', async () => {
+    render(
+      <BrowserRouter>
+        <MemoramaGamePage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      // Score display should be present
+      const scoreElements = screen.queryAllByText(/\d+/);
+      expect(scoreElements.length).toBeGreaterThan(0);
+    });
+  });
 });

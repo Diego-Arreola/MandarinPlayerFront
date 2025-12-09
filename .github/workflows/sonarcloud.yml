@@ -52,6 +52,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set lowercase owner name
+        id: lowercase
+        run: echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+        shell: bash
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -87,8 +92,8 @@ jobs:
           file: ./dockerfile
           push: true
           tags: |
-            ghcr.io/${{ secrets.DOCKER_USERNAME }}/mandarinplayerfront:latest
-            ghcr.io/${{ secrets.DOCKER_USERNAME }}/mandarinplayerfront:${{ github.sha }}
+            ghcr.io/${{ steps.lowercase.outputs.owner }}/mandarinplayerfront:latest
+            ghcr.io/${{ steps.lowercase.outputs.owner }}/mandarinplayerfront:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

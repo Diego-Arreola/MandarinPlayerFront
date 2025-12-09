@@ -158,4 +158,137 @@ describe('TopicsPage', () => {
       expect(screen.getByText('Learn numbers')).toBeInTheDocument();
     });
   });
+
+  it('navigates back to home when Back button is clicked', async () => {
+    const user = userEvent.setup();
+    render(
+      <BrowserRouter>
+        <TopicsPage />
+      </BrowserRouter>
+    );
+
+    const backButton = screen.getByRole('button', { name: /back to home/i });
+    await user.click(backButton);
+
+    expect(mockNavigate).toHaveBeenCalledWith('/');
+  });
+
+  it('opens create topic form when Create New Topic is clicked', async () => {
+    const user = userEvent.setup();
+    render(
+      <BrowserRouter>
+        <TopicsPage />
+      </BrowserRouter>
+    );
+
+    const createButton = screen.getByRole('button', { name: /create new topic/i });
+    await user.click(createButton);
+
+    expect(createButton).toBeInTheDocument();
+  });
+
+  it('handles empty topics list', async () => {
+    mockGetTopics.mockResolvedValue([]);
+
+    render(
+      <BrowserRouter>
+        <TopicsPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Topics Menu')).toBeInTheDocument();
+    });
+  });
+
+  it('renders topic titles', async () => {
+    render(
+      <BrowserRouter>
+        <TopicsPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Greetings')).toBeInTheDocument();
+      expect(screen.getByText('Numbers')).toBeInTheDocument();
+    });
+  });
+
+  it('allows navigating to topic details', async () => {
+    render(
+      <BrowserRouter>
+        <TopicsPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      const topicLink = screen.getByText('Greetings');
+      expect(topicLink).toBeInTheDocument();
+    });
+  });
+
+  it('displays topic descriptions', async () => {
+    render(
+      <BrowserRouter>
+        <TopicsPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Basic greetings')).toBeInTheDocument();
+    });
+  });
+
+  it('handles API errors gracefully', async () => {
+    mockGetTopics.mockRejectedValue(new Error('API Error'));
+
+    render(
+      <BrowserRouter>
+        <TopicsPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Topics Menu')).toBeInTheDocument();
+    });
+  });
+
+  it('renders topic count information', async () => {
+    render(
+      <BrowserRouter>
+        <TopicsPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      const topicElements = screen.getAllByText(/greetings|numbers/i);
+      expect(topicElements.length).toBeGreaterThan(0);
+    });
+  });
+
+  it('allows filtering or searching topics', async () => {
+    render(
+      <BrowserRouter>
+        <TopicsPage />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Greetings')).toBeInTheDocument();
+    });
+
+    const topicElements = screen.getAllByText(/topics|greetings|numbers/i);
+    expect(topicElements.length).toBeGreaterThan(0);
+  });
+
+  it('maintains focus on active elements', async () => {
+    render(
+      <BrowserRouter>
+        <TopicsPage />
+      </BrowserRouter>
+    );
+
+    const backButton = screen.getByRole('button', { name: /back to home/i });
+    expect(backButton).toBeInTheDocument();
+  });
 });

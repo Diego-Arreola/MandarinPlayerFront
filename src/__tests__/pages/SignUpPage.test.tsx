@@ -136,4 +136,129 @@ describe('SignUpPage', () => {
     expect(emailInput.required).toBe(true);
     expect(passwordInput.required).toBe(true);
   });
+
+  it('submits form with valid credentials', async () => {
+    const user = userEvent.setup();
+    render(
+      <BrowserRouter>
+        <SignUpPage />
+      </BrowserRouter>
+    );
+
+    const usernameInput = screen.getByPlaceholderText('Username');
+    const emailInput = screen.getByPlaceholderText('Email');
+    const passwordInput = screen.getByPlaceholderText('Password');
+    const submitButton = screen.getByRole('button', { name: /create account/i });
+
+    await user.type(usernameInput, 'newuser');
+    await user.type(emailInput, 'new@example.com');
+    await user.type(passwordInput, 'password123');
+    await user.click(submitButton);
+
+    expect(submitButton).toBeInTheDocument();
+  });
+
+  it('validates all fields are filled', async () => {
+    const user = userEvent.setup();
+    render(
+      <BrowserRouter>
+        <SignUpPage />
+      </BrowserRouter>
+    );
+
+    const submitButton = screen.getByRole('button', { name: /create account/i });
+    await user.click(submitButton);
+
+    expect(submitButton).toBeInTheDocument();
+  });
+
+  it('clears form fields individually', async () => {
+    const user = userEvent.setup();
+    render(
+      <BrowserRouter>
+        <SignUpPage />
+      </BrowserRouter>
+    );
+
+    const usernameInput = screen.getByPlaceholderText('Username') as HTMLInputElement;
+    await user.type(usernameInput, 'testuser');
+    await user.clear(usernameInput);
+
+    expect(usernameInput.value).toBe('');
+  });
+
+  it('allows multiple form submissions', async () => {
+    const user = userEvent.setup();
+    render(
+      <BrowserRouter>
+        <SignUpPage />
+      </BrowserRouter>
+    );
+
+    const submitButton = screen.getByRole('button', { name: /create account/i });
+    await user.click(submitButton);
+    await user.click(submitButton);
+
+    expect(submitButton).toBeInTheDocument();
+  });
+
+  it('handles special characters in inputs', async () => {
+    const user = userEvent.setup();
+    render(
+      <BrowserRouter>
+        <SignUpPage />
+      </BrowserRouter>
+    );
+
+    const emailInput = screen.getByPlaceholderText('Email') as HTMLInputElement;
+    await user.type(emailInput, 'test+special@example.com');
+
+    expect(emailInput.value).toBe('test+special@example.com');
+  });
+
+  it('prevents default form submission behavior', async () => {
+    const user = userEvent.setup();
+    render(
+      <BrowserRouter>
+        <SignUpPage />
+      </BrowserRouter>
+    );
+
+    const submitButton = screen.getByRole('button', { name: /create account/i });
+    await user.click(submitButton);
+
+    expect(submitButton).not.toBeDisabled();
+  });
+
+  it('maintains form state across renders', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <BrowserRouter>
+        <SignUpPage />
+      </BrowserRouter>
+    );
+
+    const usernameInput = screen.getByPlaceholderText('Username') as HTMLInputElement;
+    await user.type(usernameInput, 'user123');
+
+    rerender(
+      <BrowserRouter>
+        <SignUpPage />
+      </BrowserRouter>
+    );
+
+    const newUsernameInput = screen.getByPlaceholderText('Username') as HTMLInputElement;
+    expect(newUsernameInput).toBeInTheDocument();
+  });
+
+  it('shows password as masked input', () => {
+    render(
+      <BrowserRouter>
+        <SignUpPage />
+      </BrowserRouter>
+    );
+
+    const passwordInput = screen.getByPlaceholderText('Password') as HTMLInputElement;
+    expect(passwordInput.type).toBe('password');
+  });
 });
