@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
-import logo from '../assets/MPGeneratedLogo.png'; // Make sure your logo is at src/assets/logo.png
+import logo from '../assets/mandarino.png';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -17,15 +17,30 @@ const HomePage = () => {
         height: '100%',
       }}
     >
+      <h1
+        style={{
+          fontFamily: "'Candara', sans-serif",
+          fontSize: 'clamp(40px, 10vw, 70px)',
+          color: 'orange',
+          textShadow:
+            '-1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, 2px 2px 6px rgba(0,0,0,0.2)',
+          margin: 0,
+          padding: 0,
+          textAlign: 'center',
+        }}
+      >
+        Mandarin Player
+      </h1>
       <img
         src={logo}
         alt="Mandarin Player logo"
         style={{
-          width: 'clamp(250px, 50vw, 400px)',
-          marginBottom: '20px',
-          border: '3px solid black',
-          borderRadius: '15px',
+          width: 'clamp(250px, 20vw, 400px)',
+          // marginBottom: '20px',
           padding: '10px',
+          backgroundColor: '#ffffff',
+          borderRadius: '50%',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         }}
       />
 
