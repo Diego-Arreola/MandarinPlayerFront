@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import VocabularyList from '../components/VocabularyList';
 import AddVocabularyForm from '../components/AddVocabularyForm';
 import Button from '../components/Button';
+import { Trash2 } from 'lucide-react';
 import { topicService } from '../services/topicService';
 import type { Topic, Vocabulary } from '../services/topicService';
 
@@ -47,6 +48,19 @@ const TopicDetailPage = () => {
         }
     };
 
+    const handleDeleteTopic = async () => {
+        if (!topic) return;
+        if (window.confirm('Are you sure you want to delete this topic? This action cannot be undone.')) {
+            try {
+                await topicService.deleteTopic(topic.id);
+                navigate('/topics');
+            } catch (error) {
+                console.error('Failed to delete topic:', error);
+                alert('Failed to delete topic. Please try again.');
+            }
+        }
+    };
+
     if (isLoading) {
         return <div style={{ textAlign: 'center', padding: '50px' }}>Loading topic...</div>;
     }
@@ -62,9 +76,18 @@ const TopicDetailPage = () => {
                     &larr; Back to Topics
                 </Button>
 
-                <div style={{ borderBottom: '1px solid #eee', paddingBottom: '20px' }}>
-                    <h2 style={{ color: 'var(--secondary-color)', margin: '0 0 10px 0' }}>{topic.name}</h2>
-                    <p style={{ color: '#666', margin: 0 }}>{topic.description}</p>
+                <div style={{ borderBottom: '1px solid #eee', paddingBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div>
+                        <h2 style={{ color: 'var(--secondary-color)', margin: '0 0 10px 0' }}>{topic.name}</h2>
+                        <p style={{ color: '#666', margin: 0 }}>{topic.description}</p>
+                    </div>
+                    <button
+                        onClick={handleDeleteTopic}
+                        className="text-red-500 hover:text-red-700 transition-colors p-2 rounded hover:bg-red-50 cursor-pointer"
+                        title="Delete Topic"
+                    >
+                        <Trash2 size={24} />
+                    </button>
                 </div>
             </div>
 

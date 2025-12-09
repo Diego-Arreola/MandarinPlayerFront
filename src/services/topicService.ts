@@ -64,6 +64,22 @@ export const topicService = {
     }
   },
 
+  deleteTopic: async (id: string): Promise<void> => {
+    try {
+      const response = await fetch(`${API_ENDPOINTS.TOPICS}/${id}`, {
+        method: 'DELETE',
+        headers: getHeaders()
+      });
+      if (!response.ok) throw new Error('Error deleting topic');
+    } catch (error) {
+      console.warn("API failed, using mock data", error);
+      const index = mockTopics.findIndex(t => t.id === id);
+      if (index > -1) {
+        mockTopics.splice(index, 1);
+      }
+    }
+  },
+
   getTopicById: async (id: string): Promise<Topic | undefined> => {
     try {
       const response = await fetch(`${API_ENDPOINTS.TOPICS}/${id}`, {
