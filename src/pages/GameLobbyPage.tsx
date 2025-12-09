@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import { gameService } from '../services/gameService';
 import type { GameSession } from '../services/gameService';
-import { topicService } from '../services/topicService';
+import { topicService, mockTopics } from '../services/topicService';
 
 const GameLobbyPage = () => {
     const { gameCode } = useParams<{ gameCode: string }>();
@@ -50,16 +50,17 @@ const GameLobbyPage = () => {
 
             if (!vocabulary && session.config.topicId) {
                 try {
-                    // Try to fetch topic details to get vocabulary
-                    // This works if we have a real backend or if we mock topicService too (which we did partially in CreateGamePage but not globally)
-                    // We can reuse the mock logic from CreateGamePage or just rely on Memorama default.
-                    // Let's try to fetch.
                     const topic = await topicService.getTopicById(session.config.topicId);
                     if (topic) {
                         vocabulary = topic.vocabulary;
                     }
                 } catch (e) {
                     console.warn("Could not fetch topic details", e);
+                }
+
+                if (!vocabulary || vocabulary.length === 0) {
+                    const mockTopic = mockTopics.find(t => t.id === session.config.topicId);
+                    if (mockTopic) vocabulary = mockTopic.vocabulary;
                 }
             }
 
@@ -72,6 +73,11 @@ const GameLobbyPage = () => {
                     if (topic) vocabulary = topic.vocabulary;
                 } catch (e) {
                     console.warn("Could not fetch topic details", e);
+                }
+
+                if (!vocabulary || vocabulary.length === 0) {
+                    const mockTopic = mockTopics.find(t => t.id === session.config.topicId);
+                    if (mockTopic) vocabulary = mockTopic.vocabulary;
                 }
             }
             navigate(`/kahoot/${session.code}`, { state: { topicVocabulary: vocabulary, rounds: session.config.rounds } });
@@ -116,7 +122,6 @@ const GameLobbyPage = () => {
                             alignItems: 'center',
                             gap: '8px'
                         }}>
-                            {/* <span style={{ fontSize: '1.2rem' }}>👤</span> */}
                             {player.name} {player.isHost && '(Host)'}
                         </div>
                     ))}

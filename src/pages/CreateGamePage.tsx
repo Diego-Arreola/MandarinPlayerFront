@@ -28,26 +28,25 @@ const CreateGamePage = () => {
                 setTopics(data);
                 setSelectedTopicId(data[0].id);
             } else {
-                // Mock data for testing/demo
                 const mockTopics: Topic[] = [
                     {
                         id: '1',
-                        title: 'Greetings',
+                        name: 'Greetings',
                         description: 'Basic greetings',
                         vocabulary: [
-                            { id: '1', chinese: '你好', pinyin: 'Nǐ hǎo', spanish: 'Hello' },
-                            { id: '2', chinese: '谢谢', pinyin: 'Xièxiè', spanish: 'Thank you' },
-                            { id: '3', chinese: '再见', pinyin: 'Zàijiàn', spanish: 'Goodbye' }
+                            { id: '1', character: '你好', pinyin: 'Nǐ hǎo', translation: 'Hello' },
+                            { id: '2', character: '谢谢', pinyin: 'Xièxiè', translation: 'Thank you' },
+                            { id: '3', character: '再见', pinyin: 'Zàijiàn', translation: 'Goodbye' }
                         ]
                     },
                     {
                         id: '2',
-                        title: 'Numbers',
+                        name: 'Numbers',
                         description: '1-3',
                         vocabulary: [
-                            { id: '4', chinese: '一', pinyin: 'Yī', spanish: 'One' },
-                            { id: '5', chinese: '二', pinyin: 'Èr', spanish: 'Two' },
-                            { id: '6', chinese: '三', pinyin: 'Sān', spanish: 'Three' }
+                            { id: '4', character: '一', pinyin: 'Yī', translation: 'One' },
+                            { id: '5', character: '二', pinyin: 'Èr', translation: 'Two' },
+                            { id: '6', character: '三', pinyin: 'Sān', translation: 'Three' }
                         ]
                     }
                 ];
@@ -56,16 +55,15 @@ const CreateGamePage = () => {
             }
         } catch (error) {
             console.error("Failed to load topics", error);
-            // Mock data fallback
             const mockTopics: Topic[] = [
                 {
                     id: '1',
-                    title: 'Greetings',
+                    name: 'Greetings',
                     description: 'Basic greetings',
                     vocabulary: [
-                        { id: '1', chinese: '你好', pinyin: 'Nǐ hǎo', spanish: 'Hello' },
-                        { id: '2', chinese: '谢谢', pinyin: 'Xièxiè', spanish: 'Thank you' },
-                        { id: '3', chinese: '再见', pinyin: 'Zàijiàn', spanish: 'Goodbye' }
+                        { id: '1', character: '你好', pinyin: 'Nǐ hǎo', translation: 'Hello' },
+                        { id: '2', character: '谢谢', pinyin: 'Xièxiè', translation: 'Thank you' },
+                        { id: '3', character: '再见', pinyin: 'Zàijiàn', translation: 'Goodbye' }
                     ]
                 }
             ];
@@ -82,32 +80,25 @@ const CreateGamePage = () => {
     const handleCreateGame = async () => {
         if (!selectedGame || !selectedTopicId) return;
 
-        // Reverted direct play to support Lobby flow as requested
-        // if (selectedGame === 'memorama') { ... }
-
         if (!user) {
-            // Allow creating game without user for testing/demo if needed, 
-            // or enforce login. For now, let's assume we need a user or use a dummy one.
-            // alert("Please login to create a game");
-            // return;
         }
 
         setIsCreating(true);
         try {
+            if (selectedTopicId === '1' || selectedTopicId === '2') {
+                throw new Error("MockTopicSelected");
+            }
+
             const session = await gameService.createGame({
                 type: selectedGame,
                 topicId: selectedTopicId,
                 rounds
             }, user?.name || 'Guest');
             navigate(`/lobby/${session.code}`);
-        } catch (error) {
-            console.error('Failed to create game:', error);
-            // Mock session for demo purposes if API fails
+        } catch (error: any) {
+            console.error('Failed to create game or Mock Topic selected:', error);
             const mockCode = Math.random().toString(36).substring(2, 7).toUpperCase();
-            console.log("Using mock session with code:", mockCode);
-            // We need to store this mock session somewhere if we want the lobby to find it
-            // For now, we'll just navigate and hope the Lobby can handle it or we mock the Lobby too.
-            // A better approach for local demo is to save to localStorage.
+
             const mockSession = {
                 code: mockCode,
                 config: { type: selectedGame, topicId: selectedTopicId, rounds },
@@ -173,7 +164,7 @@ const CreateGamePage = () => {
                             style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
                         >
                             {topics.map(t => (
-                                <option key={t.id} value={t.id}>{t.title} ({t.vocabulary.length} words)</option>
+                                <option key={t.id} value={t.id}>{t.name} ({t.vocabulary?.length || 0} words)</option>
                             ))}
                         </select>
                     </div>
