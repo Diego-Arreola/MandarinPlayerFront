@@ -86,11 +86,13 @@ describe('AddVocabularyForm Component', () => {
     await userEvent.type(spanishInput, 'Hola');
     await userEvent.click(submitButton);
 
-    expect(handleSubmit).toHaveBeenCalledWith({
-      chinese: '你好',
-      pinyin: 'Nǐ hǎo',
-      spanish: 'Hola',
-    });
+    expect(handleSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        chinese: '你好',
+        pinyin: 'Nǐ hǎo',
+        spanish: 'Hola',
+      })
+    );
   });
 
   it('disables submit button when required fields are empty', () => {

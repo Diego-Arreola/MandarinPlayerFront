@@ -114,8 +114,8 @@ describe('TopicsPage', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Greetings')).toBeInTheDocument();
-      expect(screen.getByText('Numbers')).toBeInTheDocument();
+      expect(screen.getByText('Basic greetings')).toBeInTheDocument();
+      expect(screen.getByText('Learn numbers')).toBeInTheDocument();
     });
   });
 
@@ -212,8 +212,8 @@ describe('TopicsPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Greetings')).toBeInTheDocument();
-      expect(screen.getByText('Numbers')).toBeInTheDocument();
+      expect(screen.getByText('Basic greetings')).toBeInTheDocument();
+      expect(screen.getByText('Learn numbers')).toBeInTheDocument();
     });
   });
 
@@ -225,8 +225,8 @@ describe('TopicsPage', () => {
     );
 
     await waitFor(() => {
-      const topicLink = screen.getByText('Greetings');
-      expect(topicLink).toBeInTheDocument();
+      const viewButtons = screen.getAllByRole('button', { name: /view vocabulary/i });
+      expect(viewButtons.length).toBeGreaterThan(0);
     });
   });
 

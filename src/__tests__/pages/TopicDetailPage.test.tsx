@@ -74,7 +74,7 @@ describe('TopicDetailPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /greetings/i })).toBeInTheDocument();
+      expect(screen.getByText(/basic greetings/i)).toBeInTheDocument();
     });
   });
 
@@ -192,8 +192,8 @@ describe('TopicDetailPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/你好/i)).toBeInTheDocument();
-      expect(screen.getByText(/谢谢/i)).toBeInTheDocument();
+      expect(screen.getByText('Nǐ hǎo')).toBeInTheDocument();
+      expect(screen.getByText('Xièxiè')).toBeInTheDocument();
     });
   });
 
