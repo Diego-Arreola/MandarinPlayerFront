@@ -3,22 +3,22 @@
 import { Routes, Route } from 'react-router-dom';
 
 // Import your page components
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import SignUpPage from './pages/SignUpPage';
-import JoinGamePage from './pages/JoinGamePage';
-import WelcomePage from './pages/WelcomePage';
-import NotFoundPage from './pages/NotFoundPage';
+import HomePage from './infrastructure/pages/HomePage';
+import LoginPage from './infrastructure/pages/LoginPage';
+import SignUpPage from './infrastructure/pages/SignUpPage';
+import JoinGamePage from './infrastructure/pages/JoinGamePage';
+import WelcomePage from './infrastructure/pages/WelcomePage';
+import NotFoundPage from './infrastructure/pages/NotFoundPage';
 
 // Import your layout components
-import GameLayout from './components/GameLayout';
+import GameLayout from './infrastructure/components/GameLayout';
 // You will also create GameLobbyPage, QuestionPage, etc.
-import TopicsPage from './pages/TopicsPage';
-import TopicDetailPage from './pages/TopicDetailPage';
-import CreateGamePage from './pages/CreateGamePage';
-import GameLobbyPage from './pages/GameLobbyPage';
-import MemoramaGamePage from './pages/MemoramaGamePage';
-import KahootGamePage from './pages/KahootGamePage';
+import TopicsPage from './infrastructure/pages/TopicsPage';
+import TopicDetailPage from './infrastructure/pages/TopicDetailPage';
+import CreateGamePage from './infrastructure/pages/CreateGamePage';
+import GameLobbyPage from './infrastructure/pages/GameLobbyPage';
+import MemoramaGamePage from './infrastructure/pages/MemoramaGamePage';
+import KahootGamePage from './infrastructure/pages/KahootGamePage';
 
 function App() {
   return (
