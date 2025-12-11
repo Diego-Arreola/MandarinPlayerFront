@@ -7,6 +7,11 @@ afterEach(() => {
   cleanup();
 });
 
+// Ensure window object is available
+if (typeof window === 'undefined') {
+  throw new Error('jsdom is not properly configured');
+}
+
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

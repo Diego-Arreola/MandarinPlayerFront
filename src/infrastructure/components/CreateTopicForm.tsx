@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Button from './Button';
 
 interface CreateTopicFormProps {
@@ -10,6 +10,13 @@ const CreateTopicForm: React.FC<CreateTopicFormProps> = ({ onSubmit, onCancel })
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const isMountedRef = useRef(true);
+
+    useEffect(() => {
+        return () => {
+            isMountedRef.current = false;
+        };
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -18,10 +25,14 @@ const CreateTopicForm: React.FC<CreateTopicFormProps> = ({ onSubmit, onCancel })
         setIsSubmitting(true);
         try {
             await onSubmit(title, description);
-            setTitle('');
-            setDescription('');
+            if (isMountedRef.current) {
+                setTitle('');
+                setDescription('');
+            }
         } finally {
-            setIsSubmitting(false);
+            if (isMountedRef.current) {
+                setIsSubmitting(false);
+            }
         }
     };
 
