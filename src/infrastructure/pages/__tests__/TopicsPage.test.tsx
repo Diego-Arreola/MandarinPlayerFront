@@ -5,10 +5,11 @@ import { BrowserRouter } from 'react-router-dom';
 import TopicsPage from '../TopicsPage';
 import type { Topic } from '../../../domain/entities/Topic';
 
-// Mock dependencies
-const mockNavigate = vi.fn();
-const mockGetTopics = vi.fn();
-const mockCreateTopic = vi.fn();
+const { mockNavigate, mockGetTopics, mockCreateTopic } = vi.hoisted(() => ({
+  mockNavigate: vi.fn(),
+  mockGetTopics: vi.fn(),
+  mockCreateTopic: vi.fn(),
+}));
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
@@ -19,10 +20,9 @@ vi.mock('react-router-dom', async () => {
 });
 
 vi.mock('../../api/HttpTopicRepository', () => ({
-  topicService: {
-    getTopics: () => mockGetTopics(),
-    createTopic: (title: string, description: string) =>
-      mockCreateTopic(title, description),
+  topicRepository: {
+    getTopics: mockGetTopics,
+    createTopic: mockCreateTopic,
   },
 }));
 

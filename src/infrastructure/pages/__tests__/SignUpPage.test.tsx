@@ -4,8 +4,10 @@ import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import SignUpPage from '../SignUpPage';
 
-// Mock dependencies
-const mockNavigate = vi.fn();
+const { mockNavigate, mockRegisterUser } = vi.hoisted(() => ({
+  mockNavigate: vi.fn(),
+  mockRegisterUser: vi.fn(),
+}));
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
@@ -16,11 +18,11 @@ vi.mock('react-router-dom', async () => {
 });
 
 vi.mock('../../api/HttpAuthRepository', () => ({
-  registerUser: vi.fn(),
+  authRepository: {
+    registerUser: mockRegisterUser,
+    loginUser: vi.fn(),
+  },
 }));
-
-import { authRepository } from '../../api/HttpAuthRepository';
-const { registerUser } = authRepository;
 
 describe('SignUpPage', () => {
   beforeEach(() => {
@@ -142,7 +144,7 @@ describe('SignUpPage', () => {
 
   it('submits form with valid credentials', async () => {
     const user = userEvent.setup();
-    vi.mocked(registerUser).mockResolvedValue({ id: '1', email: 'new@example.com' } as any);
+    vi.mocked(mockRegisterUser).mockResolvedValue({ id: '1', email: 'new@example.com' } as any);
 
     render(
       <BrowserRouter>

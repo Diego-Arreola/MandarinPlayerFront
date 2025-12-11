@@ -17,7 +17,10 @@ vi.mock('react-router-dom', async () => {
 });
 
 vi.mock('../../api/HttpAuthRepository', () => ({
-  loginUser: vi.fn(),
+  authRepository: {
+    loginUser: vi.fn(),
+    registerUser: vi.fn(),
+  },
 }));
 
 vi.mock('../../context/AuthContext', () => ({

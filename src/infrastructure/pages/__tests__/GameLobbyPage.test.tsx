@@ -4,31 +4,33 @@ import userEvent from '@testing-library/user-event'
 import { BrowserRouter } from 'react-router-dom'
 import GameLobbyPage from '../GameLobbyPage'
 
-const mockNavigate = vi.fn();
-const mockUseParams = vi.fn();
-const mockGetSession = vi.fn();
-const mockGetTopicById = vi.fn();
+const { mockNavigate, mockUseParams, mockGetSession, mockGetTopicById } = vi.hoisted(() => ({
+  mockNavigate: vi.fn(),
+  mockUseParams: vi.fn(() => ({ gameCode: 'ABC123' })),
+  mockGetSession: vi.fn(),
+  mockGetTopicById: vi.fn(),
+}));
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {
     ...actual,
     useNavigate: () => mockNavigate,
-    useParams: () => mockUseParams(),
+    useParams: mockUseParams,
   };
 });
 
 vi.mock('../../api/HttpGameRepository', () => ({
-  gameService: {
-    getSession: (code: string) => mockGetSession(code),
+  gameRepository: {
+    getSession: mockGetSession,
     createGame: vi.fn(),
     joinGame: vi.fn(),
   }
 }));
 
 vi.mock('../../api/HttpTopicRepository', () => ({
-  topicService: {
-    getTopicById: (id: string) => mockGetTopicById(id),
+  topicRepository: {
+    getTopicById: mockGetTopicById,
     getTopics: vi.fn(),
   }
 }));
@@ -242,7 +244,7 @@ describe('GameLobbyPage', () => {
   });
 
   it('handles missing game code gracefully', async () => {
-    mockUseParams.mockReturnValue({ gameCode: undefined });
+    mockUseParams.mockReturnValue({ gameCode: '' });
 
     render(
       <BrowserRouter>

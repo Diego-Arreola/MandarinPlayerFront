@@ -4,10 +4,12 @@ import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import TopicDetailPage from '../TopicDetailPage';
 
-const mockNavigate = vi.fn();
-const mockGetTopicById = vi.fn();
-const mockAddVocabulary = vi.fn();
-const mockDeleteTopic = vi.fn();
+const { mockNavigate, mockGetTopicById, mockAddVocabulary, mockDeleteTopic } = vi.hoisted(() => ({
+  mockNavigate: vi.fn(),
+  mockGetTopicById: vi.fn(),
+  mockAddVocabulary: vi.fn(),
+  mockDeleteTopic: vi.fn(),
+}));
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
@@ -19,10 +21,10 @@ vi.mock('react-router-dom', async () => {
 });
 
 vi.mock('../../api/HttpTopicRepository', () => ({
-  topicService: {
-    getTopicById: () => mockGetTopicById(),
-    addVocabulary: (topicId: string, vocab: object) => mockAddVocabulary(topicId, vocab),
-    deleteTopic: (id: string) => mockDeleteTopic(id),
+  topicRepository: {
+    getTopicById: mockGetTopicById,
+    addVocabulary: mockAddVocabulary,
+    deleteTopic: mockDeleteTopic,
     getTopics: vi.fn(),
   }
 }));

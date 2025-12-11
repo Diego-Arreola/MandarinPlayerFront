@@ -3,11 +3,11 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import JoinGamePage from '../JoinGamePage';
+import { AuthProvider } from '../../context/AuthContext';
 
-const mockNavigate = vi.fn();
-const mockJoinGame = vi.fn();
-const mockUseAuth = vi.fn(() => ({
-  user: { id: '1', name: 'Test User', email: 'test@example.com' },
+const { mockNavigate, mockJoinGame } = vi.hoisted(() => ({
+  mockNavigate: vi.fn(),
+  mockJoinGame: vi.fn(),
 }));
 
 vi.mock('react-router-dom', async () => {
@@ -18,17 +18,35 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-vi.mock('../../context/AuthContext', () => ({
-  useAuth: () => mockUseAuth(),
-}));
+vi.mock('../../context/AuthContext', async () => {
+  const actual = await vi.importActual('../../context/AuthContext');
+  return {
+    ...actual,
+    useAuth: () => ({
+      user: { id: '1', name: 'Test User', email: 'test@example.com' },
+      login: vi.fn(),
+      logout: vi.fn(),
+    }),
+  };
+});
 
 vi.mock('../../api/HttpGameRepository', () => ({
-  gameService: {
-    joinGame: (code: string, playerName: string) => mockJoinGame(code, playerName),
+  gameRepository: {
+    joinGame: mockJoinGame,
     createGame: vi.fn(),
     getSession: vi.fn(),
   }
 }));
+
+const renderWithAuth = (component: React.ReactElement) => {
+  return render(
+    <BrowserRouter>
+      <AuthProvider>
+        {component}
+      </AuthProvider>
+    </BrowserRouter>
+  );
+};
 
 describe('JoinGamePage', () => {
   beforeEach(() => {
@@ -47,41 +65,25 @@ describe('JoinGamePage', () => {
   });
 
   it('renders the page title', () => {
-    render(
-      <BrowserRouter>
-        <JoinGamePage />
-      </BrowserRouter>
-    );
+    renderWithAuth(<JoinGamePage />);
 
     expect(screen.getByRole('heading', { name: /join a game/i })).toBeInTheDocument();
   });
 
   it('renders game code input field', () => {
-    render(
-      <BrowserRouter>
-        <JoinGamePage />
-      </BrowserRouter>
-    );
+    renderWithAuth(<JoinGamePage />);
 
     expect(screen.getByPlaceholderText(/enter game code/i)).toBeInTheDocument();
   });
 
   it('renders join button', () => {
-    render(
-      <BrowserRouter>
-        <JoinGamePage />
-      </BrowserRouter>
-    );
+    renderWithAuth(<JoinGamePage />);
 
     expect(screen.getByRole('button', { name: /join game/i })).toBeInTheDocument();
   });
 
   it('renders back button', () => {
-    render(
-      <BrowserRouter>
-        <JoinGamePage />
-      </BrowserRouter>
-    );
+    renderWithAuth(<JoinGamePage />);
 
     const buttons = screen.getAllByRole('button');
     expect(buttons.some(btn => btn.textContent?.includes('Back') || btn.textContent?.includes('←'))).toBe(true);
@@ -90,11 +92,7 @@ describe('JoinGamePage', () => {
   it('allows user to enter game code', async () => {
     const user = userEvent.setup();
 
-    render(
-      <BrowserRouter>
-        <JoinGamePage />
-      </BrowserRouter>
-    );
+    renderWithAuth(<JoinGamePage />);
 
     const input = screen.getByPlaceholderText(/enter game code/i) as HTMLInputElement;
     await user.type(input, 'abc12');
@@ -105,11 +103,7 @@ describe('JoinGamePage', () => {
   it('converts game code to uppercase', async () => {
     const user = userEvent.setup();
 
-    render(
-      <BrowserRouter>
-        <JoinGamePage />
-      </BrowserRouter>
-    );
+    renderWithAuth(<JoinGamePage />);
 
     const input = screen.getByPlaceholderText(/enter game code/i) as HTMLInputElement;
     await user.type(input, 'xyz');
@@ -120,11 +114,7 @@ describe('JoinGamePage', () => {
   it('limits game code to 5 characters', async () => {
     const user = userEvent.setup();
 
-    render(
-      <BrowserRouter>
-        <JoinGamePage />
-      </BrowserRouter>
-    );
+    renderWithAuth(<JoinGamePage />);
 
     const input = screen.getByPlaceholderText(/enter game code/i) as HTMLInputElement;
     await user.type(input, 'abcdefgh');
@@ -135,11 +125,7 @@ describe('JoinGamePage', () => {
   it('calls joinGame service when form is submitted', async () => {
     const user = userEvent.setup();
 
-    render(
-      <BrowserRouter>
-        <JoinGamePage />
-      </BrowserRouter>
-    );
+    renderWithAuth(<JoinGamePage />);
 
     const input = screen.getByPlaceholderText(/enter game code/i);
     await user.type(input, 'ABC12');
@@ -156,11 +142,7 @@ describe('JoinGamePage', () => {
     const user = userEvent.setup();
     mockJoinGame.mockResolvedValue({ success: true });
 
-    render(
-      <BrowserRouter>
-        <JoinGamePage />
-      </BrowserRouter>
-    );
+    renderWithAuth(<JoinGamePage />);
 
     const input = screen.getByPlaceholderText(/enter game code/i);
     await user.type(input, 'ABC12');
@@ -179,11 +161,7 @@ describe('JoinGamePage', () => {
       () => new Promise(resolve => setTimeout(resolve, 100))
     );
 
-    render(
-      <BrowserRouter>
-        <JoinGamePage />
-      </BrowserRouter>
-    );
+    renderWithAuth(<JoinGamePage />);
 
     const input = screen.getByPlaceholderText(/enter game code/i);
     await user.type(input, 'ABC12');
@@ -197,11 +175,7 @@ describe('JoinGamePage', () => {
   it('navigates back to welcome page when back button is clicked', async () => {
     const user = userEvent.setup();
 
-    render(
-      <BrowserRouter>
-        <JoinGamePage />
-      </BrowserRouter>
-    );
+    renderWithAuth(<JoinGamePage />);
 
     const buttons = screen.getAllByRole('button');
     const backButton = buttons.find(btn => btn.textContent?.includes('Back') || btn.textContent?.includes('←'));
@@ -218,11 +192,7 @@ describe('JoinGamePage', () => {
       () => new Promise(resolve => setTimeout(resolve, 50))
     );
 
-    render(
-      <BrowserRouter>
-        <JoinGamePage />
-      </BrowserRouter>
-    );
+    renderWithAuth(<JoinGamePage />);
 
     const input = screen.getByPlaceholderText(/enter game code/i);
     await user.type(input, 'ABC12');
@@ -247,11 +217,7 @@ describe('JoinGamePage', () => {
 
     (window.localStorage.getItem as any).mockReturnValue(JSON.stringify(mockSession));
 
-    render(
-      <BrowserRouter>
-        <JoinGamePage />
-      </BrowserRouter>
-    );
+    renderWithAuth(<JoinGamePage />);
 
     const input = screen.getByPlaceholderText(/enter game code/i);
     await user.type(input, 'ABC12');
@@ -272,11 +238,7 @@ describe('JoinGamePage', () => {
     // Mock alert
     const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => { });
 
-    render(
-      <BrowserRouter>
-        <JoinGamePage />
-      </BrowserRouter>
-    );
+    renderWithAuth(<JoinGamePage />);
 
     const input = screen.getByPlaceholderText(/enter game code/i);
     await user.type(input, 'ABC12');
@@ -294,11 +256,7 @@ describe('JoinGamePage', () => {
   it('prevents submission when code is empty', async () => {
     const user = userEvent.setup();
 
-    render(
-      <BrowserRouter>
-        <JoinGamePage />
-      </BrowserRouter>
-    );
+    renderWithAuth(<JoinGamePage />);
 
     const joinButton = screen.getByRole('button', { name: /join game/i });
     await user.click(joinButton);
